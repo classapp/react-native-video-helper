@@ -22,7 +22,12 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void getItem(String key, ReadableMap options, Promise pm) {
-    pm.resolve(key);
+  public void compress(String source, ReadableMap options, Promise pm) {
+    pm.resolve(source);
+  }
+
+  @ReactMethod
+  public void trim(String source, ReadableMap options, Promise pm) {
+    pm.resolve(source);
   }
 }
