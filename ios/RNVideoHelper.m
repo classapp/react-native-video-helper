@@ -34,7 +34,7 @@ RCT_EXPORT_MODULE()
 - (void)updateProgress: (float) progress
 {
     if (hasListeners) { // Only send events if anyone is listening
-        [self sendEventWithName:@"progress" body:@{@"value": @(progress)}];
+        [self sendEventWithName:@"progress" body:@(progress)];
     }
 }
 
@@ -73,7 +73,6 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     
     
     __block NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        NSLog(@"Helllo wotld %2f", encoder.progress);
         [self updateProgress:encoder.progress];
     }];
     

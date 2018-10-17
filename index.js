@@ -1,13 +1,41 @@
 import { NativeEventEmitter, NativeModules } from 'react-native';
 const { RNVideoHelper } = NativeModules;
 
-const videoManagerEmitter = new NativeEventEmitter(RNVideoHelper);
+const videoHelperEmitter = new NativeEventEmitter(RNVideoHelper);
 
-RNVideoHelper.emitter = videoManagerEmitter;
-RNVideoHelper.on = videoManagerEmitter.addListener;
+const LISTENERS = Symbol ? Symbol() : '__listeners';
 
-export default RNVideoHelper;
+class ProgressPromise extends Promise {
+  constructor(executor) {
+    super((resolve, reject) => executor(resolve, reject,
+      // Pass method for passing progress to listener
+      value => {
+        try {
+          return this[LISTENERS].forEach(listener => listener(value));
+        } catch(error) {
+          reject(error);
+        }
+      }));
+    this[LISTENERS] = [];
+  }
+  progress(handler) {
+    if(typeof handler !== 'function')
+      throw new Error('PROGRESS_REQUIRES_FUNCTION');
+    this[LISTENERS].push(handler);
+    return this;
+  }
+}
 
-// ...
-// // Don't forget to unsubscribe, typically in componentWillUnmount
-// subscription.remove();
+export default {
+  compress: (source, options) => {
+    return new ProgressPromise((resolve, reject, progress) => {
+      const subscription = videoHelperEmitter.addListener('progress', p => progress(p));
+  
+      RNVideoHelper.compress(source, options).then(output => {
+        subscription.remove();
+        resolve(output);
+      }).catch(err => reject(err));
+    });
+  },
+  trim: (source, options) => RNVideoHelper.trim(source, options)
+}
