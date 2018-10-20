@@ -38,7 +38,19 @@
 ```javascript
 import RNVideoHelper from 'react-native-video-helper';
 
-// TODO: What to do with the module?
-RNVideoHelper;
+const sourceUri = 'assets-library://asset/asset.mov?id=0F3F0000-9518-4F32-B389-7117F4C2B069&ext=mov';
+
+RNVideoHelper.compress(sourceUri, {
+	startTime: 10, // optional, in seconds, defaults to 0
+	endTime: 100, //  optional, in seconds, defaults to video duration
+	bitrate: 120000, // optional
+	removeAudio: true, // default false
+	width: 100, // defaults to original video width
+	height: 50, // dafaults to original video height
+}).progress(value => {
+	console.warn('progress', value); // Int with progress value from 0 to 1
+}).then(compressedUri => {
+	console.warn('compressedUri', compressedUri); // String with path to temprary compressed video
+});
 ```
   

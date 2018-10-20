@@ -37,5 +37,4 @@ export default {
       }).catch(err => reject(err));
     });
   },
-  trim: (source, options) => RNVideoHelper.trim(source, options)
 }
