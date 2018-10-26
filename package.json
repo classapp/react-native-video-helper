@@ -1,13 +1,12 @@
-
 {
   "name": "react-native-video-helper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "licence": "MIT",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/classapp/react-native-video-helper"
+    "type": "git",
+    "url": "https://github.com/classapp/react-native-video-helper"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
