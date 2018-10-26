@@ -46,7 +46,7 @@ RNVideoHelper.compress(sourceUri, {
 	bitrate: 120000, // optional
 	removeAudio: true, // default false
 	width: 100, // defaults to original video width
-	height: 50, // dafaults to original video height
+	height: 50, // defaults to original video height
 }).progress(value => {
 	console.warn('progress', value); // Int with progress value from 0 to 1
 }).then(compressedUri => {
