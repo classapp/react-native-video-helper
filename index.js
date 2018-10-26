@@ -1,9 +1,9 @@
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { NativeEventEmitter, NativeModules, } from 'react-native';
 const { RNVideoHelper } = NativeModules;
 
 const videoHelperEmitter = new NativeEventEmitter(RNVideoHelper);
 
-const LISTENERS = Symbol ? Symbol() : '__listeners';
+const LISTENERS = '__listeners';
 
 class ProgressPromise extends Promise {
   constructor(executor) {

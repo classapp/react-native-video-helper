@@ -1,15 +1,27 @@
 
 package com.reactlibrary;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
-import android.util.Log;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
 import android.net.Uri;
+import java.util.UUID;
+import javax.annotation.Nullable;
 
 public class RNVideoHelperModule extends ReactContextBaseJavaModule {
+
+  private void sendProgress(ReactContext reactContext, float progress) {
+    reactContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit("progress", progress);
+  }
 
   private final ReactApplicationContext reactContext;
 
@@ -26,35 +38,47 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void compress(String source, ReadableMap options, Promise pm) {
     Uri inputUri = Uri.parse(source);
-    int trimStart = 0;
-    int trimEnd = 10;
+
+    int initialBitRate = MediaHelper.GetBitRate(inputUri);
+    int initialDuration = MediaHelper.GetDuration(inputUri);
+    int initialWidth = MediaHelper.GetWidth(inputUri);
+    int initialHeight = MediaHelper.GetHeight(inputUri);
 
     String pathWithoutExtension = inputUri.toString().replace( ".mp4", "" );
 
-    String trimmedFileName = String.format( "%s_trimmed.mp4", pathWithoutExtension );
+    String trimmedFileName = String.format( "%s_%s.mp4", pathWithoutExtension, UUID.randomUUID().toString() );
 
     Uri outputUri = Uri.parse( trimmedFileName );
 
-    VideoResampler resampler = new VideoResampler();
-    SamplerClip clip = new SamplerClip( inputUri );
-    clip.setStartTime( trimStart );
-    clip.setEndTime( trimEnd );
-    resampler.addSamplerClip( clip );
-
-    // resampler.setInput( inputUri );
-    resampler.setOutput( outputUri );
-
-    // resampler.setStartTime( mTrimStart );
-    // resampler.setEndTime( mTrimEnd );
-
     try {
+      VideoResampler resampler = new VideoResampler(new VideoResampler.CompressProgressListener() {
+        @Override
+        public void onProgress(float progress) {
+          sendProgress(reactContext, progress);
+        }
+      });
+      SamplerClip clip = new SamplerClip( inputUri );
+
+      if (options.hasKey("startTime") || options.hasKey("endTime")) {
+        clip.setStartTime( options.hasKey("startTime") ? options.getInt("startTime") : 0 );
+        clip.setEndTime( options.hasKey("endTime") ? options.getInt("endTime") : initialDuration );
+      }
+
+      resampler.addSamplerClip( clip );
+
+      resampler.setOutput( outputUri );
+
+      resampler.setOutputResolution(
+        options.hasKey("width") ? options.getInt("width") : initialWidth,
+        options.hasKey("height") ? options.getInt("height") : initialHeight
+      );
+      resampler.setOutputBitRate( options.hasKey("bitrate") ? options.getInt("bitrate") : initialBitRate );
+
+
       resampler.start();
     } catch ( Throwable e ) {
       e.printStackTrace();
     }
-
-    Log.v("WARN", "hello worldwww" + outputUri);
-
 
     pm.resolve(outputUri.toString());
   }

@@ -33,6 +33,9 @@ import android.util.Log;
 
 @TargetApi( Build.VERSION_CODES.JELLY_BEAN_MR2 )
 public class VideoResampler {
+    interface CompressProgressListener {
+        void onProgress(float percent);
+    }
 
     private static final int TIMEOUT_USEC = 10000;
 
@@ -97,8 +100,10 @@ public class VideoResampler {
 
     long mEncoderPresentationTimeUs = 0;
 
-    public VideoResampler() {
+    CompressProgressListener mListener = null;
 
+    public VideoResampler(CompressProgressListener listener) {
+        mListener = listener;
     }
 
     /*
@@ -188,7 +193,7 @@ public class VideoResampler {
     private void setupMuxer() {
 
         try {
-            mMuxer = new MediaMuxer( mOutputUri.toString(), MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4 );
+            mMuxer = new MediaMuxer( mOutputUri.getPath(), MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4 );
         } catch ( IOException ioe ) {
             throw new RuntimeException( "MediaMuxer creation failed", ioe );
         }
@@ -262,7 +267,7 @@ public class VideoResampler {
 
         MediaExtractor extractor = new MediaExtractor();
         try {
-            extractor.setDataSource( clip.getUri().toString() );
+            extractor.setDataSource( clip.getUri().getPath() );
         } catch ( IOException e ) {
             e.printStackTrace();
             return null;
@@ -305,7 +310,7 @@ public class VideoResampler {
         }
     }
 
-    private void resampleVideo( MediaExtractor extractor, MediaCodec decoder, SamplerClip clip ) {
+    private void resampleVideo( MediaExtractor extractor, MediaCodec decoder, SamplerClip clip) {
         ByteBuffer[] decoderInputBuffers = decoder.getInputBuffers();
         ByteBuffer[] encoderOutputBuffers = mEncoder.getOutputBuffers();
         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
@@ -407,6 +412,10 @@ public class VideoResampler {
                     outputDone = ( info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM ) != 0;
 
                     mEncoder.releaseOutputBuffer( encoderStatus, false );
+                }
+
+                if (mListener != null) {
+                    mListener.onProgress((float) info.presentationTimeUs / ((float) endTime * 1000));
                 }
 
                 if ( outputDoneNextTimeWeCheck ) {

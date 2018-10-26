@@ -27,7 +27,7 @@ public class MediaHelper {
 
     public static Bitmap GetThumbnailFromVideo( Uri uri, long timeMs ) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource( uri.toString() );
+        retriever.setDataSource( uri.getPath() );
         return retriever.getFrameAtTime( timeMs * 1000 );
     }
 
@@ -54,7 +54,7 @@ public class MediaHelper {
 
     public static int GetMediaMetadataRetrieverPropertyInteger( Uri uri, int key, int defaultValue ) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource( uri.toString() );
+        retriever.setDataSource( uri.getPath() );
         String value = retriever.extractMetadata( key );
 
         if ( value == null ) {
