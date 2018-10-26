@@ -50,7 +50,7 @@ RNVideoHelper.compress(sourceUri, {
 }).progress(value => {
 	console.warn('progress', value); // Int with progress value from 0 to 1
 }).then(compressedUri => {
-	console.warn('compressedUri', compressedUri); // String with path to temprary compressed video
+	console.warn('compressedUri', compressedUri); // String with path to temporary compressed video
 });
 ```
   
