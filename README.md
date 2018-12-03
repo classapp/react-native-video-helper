@@ -43,7 +43,7 @@ const sourceUri = 'assets-library://asset/asset.mov?id=0F3F0000-9518-4F32-B389-7
 RNVideoHelper.compress(sourceUri, {
 	startTime: 10, // optional, in seconds, defaults to 0
 	endTime: 100, //  optional, in seconds, defaults to video duration
-	bitrate: 120000, // optional
+	bitrate: 1200000, // optional
 	removeAudio: true, // default false
 	width: 100, // defaults to original video width
 	height: 50, // defaults to original video height
