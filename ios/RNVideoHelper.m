@@ -52,21 +52,23 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     CMTime assetTime = [asset duration];
     Float64 duration = CMTimeGetSeconds(assetTime);
     
+    NSNumber * startT = @([options[@"startTime"] floatValue]);
+    NSNumber * endT = @([options[@"endTime"] floatValue]);
+    
     SDAVAssetExportSession *encoder = [SDAVAssetExportSession.alloc initWithAsset:asset];
 
-    if (options[@"startTime"] && [options[@"startTime"] floatValue] > duration) {
+    if (startT && [startT floatValue] > duration) {
         reject(@"Start time is larger than video duration", nil, nil);
         return;
     }
     
-    if (options[@"endTime"] && [options[@"endTime"] floatValue] > duration) {
-        reject(@"End time is larger than video duration", nil, nil);
-        return;
+    if (endT && [endT floatValue] > duration) {
+        endT = nil;
     }
 
-    if (options[@"startTime"] || options[@"endTime"]) {
-        CMTime startTime = CMTimeMake((options[@"startTime"]) ? [options[@"startTime"] floatValue] : 0, 1);
-        CMTime stopTime = CMTimeMake((options[@"endTime"]) ? [options[@"endTime"] floatValue] : duration, 1);
+    if (startT || endT) {
+        CMTime startTime = CMTimeMake((startT) ? [startT floatValue] : 0, 1);
+        CMTime stopTime = CMTimeMake((endT) ? [endT floatValue] : duration, 1);
         CMTimeRange exportTimeRange = CMTimeRangeFromTimeToTime(startTime, stopTime);
         encoder.timeRange = exportTimeRange;
     }
