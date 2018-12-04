@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5DDDE51D21B6F87B003D705C /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DDDE51C21B6F87B003D705C /* SDAVAssetExportSession.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNVideoHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNVideoHelper.m */; };
 /* End PBXBuildFile section */
 
@@ -24,6 +25,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNVideoHelper.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNVideoHelper.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		5DDDE51B21B6F874003D705C /* SDAVAssetExportSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAVAssetExportSession.h; sourceTree = "<group>"; };
+		5DDDE51C21B6F87B003D705C /* SDAVAssetExportSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDAVAssetExportSession.m; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNVideoHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVideoHelper.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNVideoHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVideoHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,6 +53,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				5DDDE51C21B6F87B003D705C /* SDAVAssetExportSession.m */,
+				5DDDE51B21B6F874003D705C /* SDAVAssetExportSession.h */,
 				B3E7B5881CC2AC0600A0062D /* RNVideoHelper.h */,
 				B3E7B5891CC2AC0600A0062D /* RNVideoHelper.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -113,6 +118,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3E7B58A1CC2AC0600A0062D /* RNVideoHelper.m in Sources */,
+				5DDDE51D21B6F87B003D705C /* SDAVAssetExportSession.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,7 +210,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-				"$(inherited)",
+					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
