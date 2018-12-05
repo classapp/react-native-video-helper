@@ -1,7 +1,6 @@
 
 #import "RNVideoHelper.h"
 #import <AVFoundation/AVFoundation.h>
-#import "SDAVAssetExportSession.h"
 
 @implementation RNVideoHelper
 {
@@ -46,60 +45,49 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     
     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:url options:nil];
     
-    AVAssetTrack *track = [[asset tracksWithMediaType:AVMediaTypeVideo] firstObject];
-    CGSize dimensions = CGSizeApplyAffineTransform(track.naturalSize, track.preferredTransform);
-    
     CMTime assetTime = [asset duration];
     Float64 duration = CMTimeGetSeconds(assetTime);
     
     NSNumber * startT = @([options[@"startTime"] floatValue]);
     NSNumber * endT = @([options[@"endTime"] floatValue]);
-    bool removeAudio = [options[@"removeAudio"] intValue] == 1;
     
-    SDAVAssetExportSession *encoder = [SDAVAssetExportSession.alloc initWithAsset:asset];
-
+    NSString * preset = nil;
+    if (!options[@"quality"] || [options[@"quality"] isEqual: @"low"]) {
+        preset = AVAssetExportPreset640x480;
+    } else if ([options[@"quality"] isEqual: @"medium"]) {
+        preset = AVAssetExportPreset1280x720;
+    } else if ([options[@"quality"] isEqual: @"high"]) {
+        preset = AVAssetExportPreset1920x1080;
+    } else {
+        reject(@"quality_error", @"Video quality should be low, medium or high", nil);
+        return;
+    }
+    
+    AVAssetExportSession *encoder = [[AVAssetExportSession alloc] initWithAsset:asset presetName:preset];
+    
     if (startT && [startT floatValue] > duration) {
-        reject(@"Start time is larger than video duration", nil, nil);
+        reject(@"start_time_error", @"Start time is larger than video duration", nil);
         return;
     }
     
     if (endT && [endT floatValue] > duration) {
         endT = nil;
     }
-
+    
     if (startT || endT) {
         CMTime startTime = CMTimeMake((startT) ? [startT floatValue] : 0, 1);
         CMTime stopTime = CMTimeMake((endT) ? [endT floatValue] : duration, 1);
         CMTimeRange exportTimeRange = CMTimeRangeFromTimeToTime(startTime, stopTime);
         encoder.timeRange = exportTimeRange;
     }
-
+    
     encoder.outputFileType = AVFileTypeMPEG4;
     encoder.outputURL = [NSURL fileURLWithPath:
                          [NSTemporaryDirectory() stringByAppendingPathComponent:
-                          [NSString stringWithFormat:@"lowerBitRate-%d.mov",arc4random() % 1000]
+                          [NSString stringWithFormat:@"compressed-%d.mov",arc4random() % 1000]
                           ]
                          ];
     encoder.shouldOptimizeForNetworkUse = true;
-
-    encoder.videoSettings = @{
-                              AVVideoCodecKey: AVVideoCodecH264,
-                              AVVideoWidthKey: (options[@"width"]) ? options[@"width"] : @(dimensions.width),
-                              AVVideoHeightKey: options[@"height"] ? options[@"height"] : @(dimensions.height),
-                              AVVideoCompressionPropertiesKey: @{
-                                      AVVideoAverageBitRateKey: (options[@"bitrate"]) ? options[@"bitrate"] : @([track estimatedDataRate]),
-                                      AVVideoProfileLevelKey: AVVideoProfileLevelH264BaselineAutoLevel,
-                                      },
-                              };
-
-    if (!removeAudio) {
-        encoder.audioSettings = @{
-                                  AVFormatIDKey: @(kAudioFormatMPEG4AAC),
-                                  AVNumberOfChannelsKey: @2,
-                                  AVSampleRateKey: @44100,
-                                  AVEncoderBitRateKey: @96000,
-                                };
-    }
     
     __block NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer * _Nonnull timer) {
         [self updateProgress:encoder.progress];
@@ -109,7 +97,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
      {
          [timer invalidate];
          timer = nil;
-
+         
          if (encoder.status == AVAssetExportSessionStatusCompleted)
          {
              NSDate *methodFinish = [NSDate date];
@@ -120,10 +108,10 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
              resolve(encoder.outputURL.absoluteString);
          } else {
              NSLog(@"Video export failed with error: %@ (%ld)", encoder.error.localizedDescription, encoder.error.code);
-             reject(@"Video export failed", nil, nil);
+             reject(@"video_export_error", @"Video export failed", nil);
          }
      }];
-
+    
 }
 
 @end
