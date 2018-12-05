@@ -54,6 +54,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     
     NSNumber * startT = @([options[@"startTime"] floatValue]);
     NSNumber * endT = @([options[@"endTime"] floatValue]);
+    bool removeAudio = [options[@"removeAudio"] intValue] == 1;
     
     SDAVAssetExportSession *encoder = [SDAVAssetExportSession.alloc initWithAsset:asset];
 
@@ -80,7 +81,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
                           ]
                          ];
     encoder.shouldOptimizeForNetworkUse = true;
-    
+
     encoder.videoSettings = @{
                               AVVideoCodecKey: AVVideoCodecH264,
                               AVVideoWidthKey: (options[@"width"]) ? options[@"width"] : @(dimensions.width),
@@ -90,8 +91,8 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
                                       AVVideoProfileLevelKey: AVVideoProfileLevelH264BaselineAutoLevel,
                                       },
                               };
-    
-    if (!options[@"removeAudio"]) {
+
+    if (!removeAudio) {
         encoder.audioSettings = @{
                                   AVFormatIDKey: @(kAudioFormatMPEG4AAC),
                                   AVNumberOfChannelsKey: @2,
