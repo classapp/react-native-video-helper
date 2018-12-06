@@ -12,8 +12,11 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import android.net.Uri;
+import android.util.Log;
+
 import java.util.UUID;
 import javax.annotation.Nullable;
+import com.reactlibrary.videocompressor.*;
 
 public class RNVideoHelperModule extends ReactContextBaseJavaModule {
 
@@ -36,50 +39,47 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void compress(String source, ReadableMap options, Promise pm) {
+  public void compress(String source, ReadableMap options, final Promise pm) {
     Uri inputUri = Uri.parse(source);
-
-    int initialBitRate = MediaHelper.GetBitRate(inputUri);
-    int initialDuration = MediaHelper.GetDuration(inputUri);
-    int initialWidth = MediaHelper.GetWidth(inputUri);
-    int initialHeight = MediaHelper.GetHeight(inputUri);
 
     String pathWithoutExtension = inputUri.toString().replace( ".mp4", "" );
 
     String trimmedFileName = String.format( "%s_%s.mp4", pathWithoutExtension, UUID.randomUUID().toString() );
 
-    Uri outputUri = Uri.parse( trimmedFileName );
+    final Uri outputUri = Uri.parse( trimmedFileName );
+
+    String quality = options.hasKey("quality") ? options.getString("quality") : "";
+    long startTime = options.hasKey("startTime") ? (long)options.getDouble("startTime") : -1;
+    long endTime = options.hasKey("endTime") ? (long)options.getDouble("endTime") : -1;
 
     try {
-      VideoResampler resampler = new VideoResampler(new VideoResampler.CompressProgressListener() {
+      VideoCompress.compressVideo(inputUri.getPath(), outputUri.getPath(), quality, startTime, endTime, new VideoCompress.CompressListener() {
         @Override
-        public void onProgress(float progress) {
-          sendProgress(reactContext, progress);
+        public void onStart() {
+          //Start Compress
+          Log.d("INFO", "Compression started");
+        }
+
+        @Override
+        public void onSuccess() {
+          //Finish successfully
+          pm.resolve(outputUri.toString());
+
+        }
+
+        @Override
+        public void onFail() {
+          //Failed
+          pm.reject("Failed to compress video");
+        }
+
+        @Override
+        public void onProgress(float percent) {
+          sendProgress(reactContext, percent/100);
         }
       });
-      SamplerClip clip = new SamplerClip( inputUri );
-
-      if (options.hasKey("startTime") || options.hasKey("endTime")) {
-        clip.setStartTime( options.hasKey("startTime") ? options.getInt("startTime") : 0 );
-        clip.setEndTime( options.hasKey("endTime") ? options.getInt("endTime") : initialDuration );
-      }
-
-      resampler.addSamplerClip( clip );
-
-      resampler.setOutput( outputUri );
-
-      resampler.setOutputResolution(
-        options.hasKey("width") ? options.getInt("width") : initialWidth,
-        options.hasKey("height") ? options.getInt("height") : initialHeight
-      );
-      resampler.setOutputBitRate( options.hasKey("bitrate") ? options.getInt("bitrate") : initialBitRate );
-
-
-      resampler.start();
     } catch ( Throwable e ) {
       e.printStackTrace();
     }
-
-    pm.resolve(outputUri.toString());
   }
 }
