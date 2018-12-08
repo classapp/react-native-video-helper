@@ -1,6 +1,7 @@
 
 #import "RNVideoHelper.h"
 #import <AVFoundation/AVFoundation.h>
+#import "SDAVAssetExportSession.h"
 
 @implementation RNVideoHelper
 {
@@ -48,22 +49,36 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     CMTime assetTime = [asset duration];
     Float64 duration = CMTimeGetSeconds(assetTime);
     
-    NSNumber * startT = @([options[@"startTime"] floatValue]);
-    NSNumber * endT = @([options[@"endTime"] floatValue]);
+    NSNumber *startT = @([options[@"startTime"] floatValue]);
+    NSNumber *endT = @([options[@"endTime"] floatValue]);
     
-    NSString * preset = nil;
-    if (!options[@"quality"] || [options[@"quality"] isEqual: @"low"]) {
-        preset = AVAssetExportPreset640x480;
-    } else if ([options[@"quality"] isEqual: @"medium"]) {
-        preset = AVAssetExportPreset1280x720;
+    AVAssetTrack *videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+
+    CGSize naturalSize = [videoTrack naturalSize];
+    
+    CGFloat maxWidth = 720;
+    CGFloat maxHeight = 720;
+    CGFloat bitrate = 1300000;
+    if ([options[@"quality"] isEqual: @"medium"]) {
+        maxWidth = 1280;
+        maxHeight = 1280;
+        bitrate = 1900000;
     } else if ([options[@"quality"] isEqual: @"high"]) {
-        preset = AVAssetExportPreset1920x1080;
-    } else {
-        reject(@"quality_error", @"Video quality should be low, medium or high", nil);
-        return;
+        maxWidth = 1920;
+        maxHeight = 1920;
+        bitrate = 2600000;
     }
     
-    AVAssetExportSession *encoder = [[AVAssetExportSession alloc] initWithAsset:asset presetName:preset];
+    CGFloat widthRatio = maxWidth / naturalSize.width;
+    CGFloat heightRatio = maxHeight / naturalSize.height;
+    CGFloat bestRatio = MIN(widthRatio, heightRatio);
+    CGFloat finalRatio = bestRatio < 1 ? bestRatio : 1;
+    // output
+    CGFloat width = naturalSize.width * finalRatio;
+    CGFloat height = naturalSize.height * finalRatio;
+
+    
+    SDAVAssetExportSession *encoder = [SDAVAssetExportSession.alloc initWithAsset:asset];
     
     if (startT && [startT floatValue] > duration) {
         reject(@"start_time_error", @"Start time is larger than video duration", nil);
@@ -80,6 +95,23 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
         CMTimeRange exportTimeRange = CMTimeRangeFromTimeToTime(startTime, stopTime);
         encoder.timeRange = exportTimeRange;
     }
+    
+    encoder.videoSettings = @{
+      AVVideoCodecKey: AVVideoCodecH264,
+      AVVideoWidthKey: @(width),
+      AVVideoHeightKey: @(height),
+      AVVideoCompressionPropertiesKey: @{
+          AVVideoAverageBitRateKey: @(bitrate),
+          AVVideoProfileLevelKey: AVVideoProfileLevelH264BaselineAutoLevel,
+        },
+    };
+    
+    encoder.audioSettings = @{
+      AVFormatIDKey: @(kAudioFormatMPEG4AAC),
+      AVNumberOfChannelsKey: @1,
+      AVSampleRateKey: @44100,
+      AVEncoderBitRateKey: @128000,
+    };
     
     encoder.outputFileType = AVFileTypeMPEG4;
     encoder.outputURL = [NSURL fileURLWithPath:
@@ -108,7 +140,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
              resolve(encoder.outputURL.absoluteString);
          } else {
              NSLog(@"Video export failed with error: %@ (%ld)", encoder.error.localizedDescription, encoder.error.code);
-             reject(@"video_export_error", @"Video export failed", nil);
+             reject(@"video_export_error", [NSString stringWithFormat:@"Video export failed with error: %@ (%ld)", encoder.error.localizedDescription, encoder.error.code], nil);
          }
      }];
     

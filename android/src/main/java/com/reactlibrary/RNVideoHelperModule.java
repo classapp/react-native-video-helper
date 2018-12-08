@@ -70,7 +70,7 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
         @Override
         public void onFail() {
           //Failed
-          pm.reject("Failed to compress video");
+          pm.reject("ERROR", "Failed to compress video");
         }
 
         @Override
