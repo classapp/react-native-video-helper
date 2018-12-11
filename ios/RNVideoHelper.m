@@ -69,15 +69,26 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
         bitrate = 2600000;
     }
     
-    CGFloat widthRatio = maxWidth / naturalSize.width;
-    CGFloat heightRatio = maxHeight / naturalSize.height;
+    CGFloat originalWidth = naturalSize.width;
+    CGFloat originalHeight = naturalSize.height;
+    
+    CGSize transformedVideoSize =
+    CGSizeApplyAffineTransform(videoTrack.naturalSize, videoTrack.preferredTransform);
+    bool videoIsPortrait = transformedVideoSize.width < transformedVideoSize.height;
+
+    if (videoIsPortrait) {
+        originalWidth = naturalSize.height;
+        originalHeight = naturalSize.width;
+    }
+    
+    CGFloat widthRatio = maxWidth / originalWidth;
+    CGFloat heightRatio = maxHeight / originalHeight;
     CGFloat bestRatio = MIN(widthRatio, heightRatio);
     CGFloat finalRatio = bestRatio < 1 ? bestRatio : 1;
     // output
-    CGFloat width = naturalSize.width * finalRatio;
-    CGFloat height = naturalSize.height * finalRatio;
+    CGFloat width = originalWidth * finalRatio;
+    CGFloat height = originalHeight * finalRatio;
 
-    
     SDAVAssetExportSession *encoder = [SDAVAssetExportSession.alloc initWithAsset:asset];
     
     if (startT && [startT floatValue] > duration) {
