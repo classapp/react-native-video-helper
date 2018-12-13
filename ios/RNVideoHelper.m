@@ -55,6 +55,8 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     AVAssetTrack *videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
 
     CGSize naturalSize = [videoTrack naturalSize];
+
+    CGFloat originalBitrate = [videoTrack estimatedDataRate];
     
     CGFloat maxWidth = 720;
     CGFloat maxHeight = 720;
@@ -112,7 +114,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
       AVVideoWidthKey: @(width),
       AVVideoHeightKey: @(height),
       AVVideoCompressionPropertiesKey: @{
-          AVVideoAverageBitRateKey: @(bitrate),
+              AVVideoAverageBitRateKey: @(bitrate > originalBitrate ? originalBitrate : bitrate),
           AVVideoProfileLevelKey: AVVideoProfileLevelH264BaselineAutoLevel,
         },
     };
@@ -127,9 +129,8 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     encoder.outputFileType = AVFileTypeMPEG4;
     encoder.outputURL = [NSURL fileURLWithPath:
                          [NSTemporaryDirectory() stringByAppendingPathComponent:
-                          [NSString stringWithFormat:@"compressed-%d.mov",arc4random() % 1000]
-                          ]
-                         ];
+                          [NSString stringWithFormat:@"compressed_%@.mov", [[NSProcessInfo processInfo] globallyUniqueString]
+                          ]]];
     encoder.shouldOptimizeForNetworkUse = true;
     
     __block NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer * _Nonnull timer) {

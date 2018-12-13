@@ -44,7 +44,7 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
 
     String pathWithoutExtension = inputUri.toString().replace( ".mp4", "" );
 
-    String trimmedFileName = String.format( "%s_%s.mp4", pathWithoutExtension, UUID.randomUUID().toString() );
+    String trimmedFileName = String.format( "compressed_%s_%s.mp4", pathWithoutExtension, UUID.randomUUID().toString() );
 
     final Uri outputUri = Uri.parse( trimmedFileName );
 
