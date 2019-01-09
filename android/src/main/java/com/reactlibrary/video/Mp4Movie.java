@@ -1,4 +1,4 @@
-package com.reactlibrary.videocompressor;
+package com.reactlibrary.video;
 
 import android.annotation.TargetApi;
 import android.media.MediaCodec;

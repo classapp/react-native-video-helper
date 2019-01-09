@@ -1,4 +1,4 @@
-package com.reactlibrary.videocompressor;
+package com.reactlibrary.video;
 
 import android.os.AsyncTask;
 
@@ -6,12 +6,12 @@ public class VideoCompress {
     private static final String TAG = VideoCompress.class.getSimpleName();
 
     public static VideoCompressTask compressVideo(String srcPath, String destPath, String quality, long startTime, long endTime, CompressListener listener) {
-        int finalQuality = VideoController.COMPRESS_QUALITY_LOW;
+        int finalQuality = MediaController.COMPRESS_QUALITY_LOW;
 
         if (quality.equals("high")) {
-            finalQuality = VideoController.COMPRESS_QUALITY_HIGH;
+            finalQuality = MediaController.COMPRESS_QUALITY_HIGH;
         } else if (quality.equals("medium")) {
-            finalQuality = VideoController.COMPRESS_QUALITY_MEDIUM;
+            finalQuality = MediaController.COMPRESS_QUALITY_MEDIUM;
         }
 
         VideoCompressTask task = new VideoCompressTask(listener, finalQuality, startTime, endTime);
@@ -42,7 +42,7 @@ public class VideoCompress {
 
         @Override
         protected Boolean doInBackground(String... paths) {
-            return VideoController.getInstance().convertVideo(paths[0], paths[1], mQuality, mStartTime, mEndTime, new VideoController.CompressProgressListener() {
+            return MediaController.getInstance().convertVideo(paths[0], paths[1], mQuality, mStartTime, mEndTime, new MediaController.CompressProgressListener() {
                 @Override
                 public void onProgress(float percent) {
                     publishProgress(percent);

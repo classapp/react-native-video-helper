@@ -1,4 +1,4 @@
-package com.reactlibrary.videocompressor;
+package com.reactlibrary.video;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -17,12 +17,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 @SuppressLint("NewApi")
-public class VideoController {
+public class MediaController {
     static final int COMPRESS_QUALITY_HIGH = 1;
     static final int COMPRESS_QUALITY_MEDIUM = 2;
     static final int COMPRESS_QUALITY_LOW = 3;
@@ -37,20 +34,20 @@ public class VideoController {
     private final static int PROCESSOR_TYPE_MTK = 3;
     private final static int PROCESSOR_TYPE_SEC = 4;
     private final static int PROCESSOR_TYPE_TI = 5;
-    private static volatile VideoController Instance = null;
+    private static volatile MediaController Instance = null;
     private boolean videoConvertFirstWrite = true;
 
     interface CompressProgressListener {
         void onProgress(float percent);
     }
 
-    public static VideoController getInstance() {
-        VideoController localInstance = Instance;
+    public static MediaController getInstance() {
+        MediaController localInstance = Instance;
         if (localInstance == null) {
-            synchronized (VideoController.class) {
+            synchronized (MediaController.class) {
                 localInstance = Instance;
                 if (localInstance == null) {
-                    Instance = localInstance = new VideoController();
+                    Instance = localInstance = new MediaController();
                 }
             }
         }
@@ -123,7 +120,7 @@ public class VideoController {
 
         @Override
         public void run() {
-            VideoController.getInstance().convertVideo(videoPath, destPath, 0, -1, -1,null);
+            MediaController.getInstance().convertVideo(videoPath, destPath, 0, -1, -1,null);
         }
     }
 
@@ -156,7 +153,7 @@ public class VideoController {
      * @param dest destination directory to put result
      */
 
-public void scheduleVideoConvert(String path, String dest) {
+    public void scheduleVideoConvert(String path, String dest) {
         startVideoConvertFromQueue(path, dest);
     }
 
@@ -257,38 +254,60 @@ public void scheduleVideoConvert(String path, String dest) {
         String rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
         long duration = Long.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) * 1000;
 
-        long startTime = startT;
-        long endTime = endT;
+        long startTime = startT * 1000000;
+        long endTime = endT * 1000000;
+
+        if (startTime > duration) {
+            throw new RuntimeException("Start time is longer than video duration");
+        }
+
+        if (endTime > duration) {
+            endTime = duration;
+        }
 
         int rotationValue = Integer.valueOf(rotation);
-        int originalWidth = Integer.valueOf(width);
-        int originalHeight = Integer.valueOf(height);
+        float originalWidth = Integer.valueOf(width);
+        float originalHeight = Integer.valueOf(height);
 
-        int resultWidth;
-        int resultHeight;
+        float maxWidth;
+        float maxHeight;
         int bitrate;
         switch (quality) {
             default:
-            case COMPRESS_QUALITY_HIGH:
-                resultWidth = originalWidth * 2 / 3;
-                resultHeight = originalHeight * 2 / 3;
-                bitrate = resultWidth * resultHeight * 30;
+            case COMPRESS_QUALITY_LOW:
+                maxWidth = 720;
+                maxHeight = 720;
+                bitrate = 1300000;
                 break;
             case COMPRESS_QUALITY_MEDIUM:
-                resultWidth = originalWidth / 2;
-                resultHeight = originalHeight / 2;
-                bitrate = resultWidth * resultHeight * 10;
+                maxWidth = 1280;
+                maxHeight = 1280;
+                bitrate = 1900000;
                 break;
-            case COMPRESS_QUALITY_LOW:
-                resultWidth = originalWidth / 2;
-                resultHeight = originalHeight / 2;
-                bitrate = (resultWidth/2) * (resultHeight/2) * 10;
+            case COMPRESS_QUALITY_HIGH:
+                maxWidth = 1920;
+                maxHeight = 1920;
+                bitrate = 2600000;
                 break;
         }
 
+        float widthRatio = maxWidth / originalWidth;
+        float heightRatio = maxHeight / originalHeight;
+        float bestRatio = Math.min(widthRatio, heightRatio);
+        float finalRatio = bestRatio < 1 ? bestRatio : 1;
+        // output
+        int resultWidth = Math.round(originalWidth * finalRatio);
+        int resultHeight = Math.round(originalHeight * finalRatio);
+
         int rotateRender = 0;
 
-        File cacheFile = new File(destinationPath);
+        File cacheFile = new File(
+                Environment.getExternalStorageDirectory()
+                        + File.separator
+                        + Config.VIDEO_COMPRESSOR_APPLICATION_DIR_NAME
+                        + Config.VIDEO_COMPRESSOR_COMPRESSED_VIDEOS_DIR,
+                "VIDEO_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date()) + ".mp4"
+        );
 
         if (Build.VERSION.SDK_INT < 18 && resultHeight > resultWidth && resultWidth != originalWidth && resultHeight != originalHeight) {
             int temp = resultHeight;
@@ -751,33 +770,7 @@ public void scheduleVideoConvert(String path, String dest) {
 */
 
     //    cacheFile.delete();
-
-       /* try {
-           // copyFile(cacheFile,inputFile);
-            //inputFile.delete();
-            FileUtils.copyFile(cacheFile,inputFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-         // cacheFile.delete();
        // inputFile.delete();
         return true;
-    }
-
-    public static void copyFile(File src, File dst) throws IOException
-    {
-        FileChannel inChannel = new FileInputStream(src).getChannel();
-        FileChannel outChannel = new FileOutputStream(dst).getChannel();
-        try
-        {
-            inChannel.transferTo(1, inChannel.size(), outChannel);
-        }
-        finally
-        {
-            if (inChannel != null)
-                inChannel.close();
-            if (outChannel != null)
-                outChannel.close();
-        }
     }
 }

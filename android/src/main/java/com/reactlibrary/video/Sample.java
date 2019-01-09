@@ -1,4 +1,4 @@
-package com.reactlibrary.videocompressor;
+package com.reactlibrary.video;
 
 public class Sample {
     private long offset = 0;

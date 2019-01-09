@@ -94,7 +94,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     SDAVAssetExportSession *encoder = [SDAVAssetExportSession.alloc initWithAsset:asset];
     
     if (startT && [startT floatValue] > duration) {
-        reject(@"start_time_error", @"Start time is larger than video duration", nil);
+        reject(@"start_time_error", @"Start time is longer than video duration", nil);
         return;
     }
     

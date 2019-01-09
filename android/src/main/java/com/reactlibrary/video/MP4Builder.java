@@ -1,4 +1,4 @@
-package com.reactlibrary.videocompressor;
+package com.reactlibrary.video;
 
 import android.annotation.TargetApi;
 import android.media.MediaCodec;
@@ -43,6 +43,7 @@ import java.util.List;
 
 @TargetApi(16)
 public class MP4Builder {
+
     private InterleaveChunkMdat mdat = null;
     private Mp4Movie currentMp4Movie = null;
     private FileOutputStream fos = null;
