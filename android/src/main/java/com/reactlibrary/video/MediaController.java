@@ -304,8 +304,7 @@ public class MediaController {
         File cacheFile = new File(
                 Environment.getExternalStorageDirectory()
                         + File.separator
-                        + Config.VIDEO_COMPRESSOR_APPLICATION_DIR_NAME
-                        + Config.VIDEO_COMPRESSOR_COMPRESSED_VIDEOS_DIR,
+                        + "Temp/",
                 "VIDEO_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date()) + ".mp4"
         );
 
