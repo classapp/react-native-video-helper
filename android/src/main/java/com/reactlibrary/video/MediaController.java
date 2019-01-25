@@ -13,10 +13,6 @@ import android.util.Log;
 
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import android.os.Environment;
 
 @SuppressLint("NewApi")
 public class MediaController {
@@ -301,12 +297,7 @@ public class MediaController {
 
         int rotateRender = 0;
 
-        File cacheFile = new File(
-                Environment.getExternalStorageDirectory()
-                        + File.separator
-                        + "Temp/",
-                "VIDEO_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date()) + ".mp4"
-        );
+        File cacheFile = new File(destinationPath);
 
         if (Build.VERSION.SDK_INT < 18 && resultHeight > resultWidth && resultWidth != originalWidth && resultHeight != originalHeight) {
             int temp = resultHeight;
