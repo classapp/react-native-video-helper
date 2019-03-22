@@ -292,8 +292,9 @@ public class MediaController {
         float bestRatio = Math.min(widthRatio, heightRatio);
         float finalRatio = bestRatio < 1 ? bestRatio : 1;
         // output
-        int resultWidth = Math.round(originalWidth * finalRatio);
-        int resultHeight = Math.round(originalHeight * finalRatio);
+        // width and height must be multiples of 2
+        int resultWidth = 2 * (Math.round((originalWidth * finalRatio)/2));
+        int resultHeight = 2 * (Math.round((originalHeight * finalRatio)/2));
 
         int rotateRender = 0;
 
