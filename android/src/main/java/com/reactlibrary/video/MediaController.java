@@ -475,11 +475,11 @@ public class MediaController {
                                 } else if (codecName.equals("OMX.TI.DUCATI1.VIDEO.H264E")) {
                                     processorType = PROCESSOR_TYPE_TI;
                                 }
-                                Log.e("info", "codec = " + codecInfo.getName() + " manufacturer = " + manufacturer + "device = " + Build.MODEL);
+                                Log.d("info", "codec = " + codecInfo.getName() + " manufacturer = " + manufacturer + "device = " + Build.MODEL);
                             } else {
                                 colorFormat = MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface;
                             }
-                            Log.e("info", "colorFormat = " + colorFormat);
+                            Log.d("info", "colorFormat = " + colorFormat);
 
                             int resultHeightAligned = resultHeight;
                             int padding = 0;
@@ -570,6 +570,11 @@ public class MediaController {
 
                             while (!outputDone) {
                                 checkConversionCanceled();
+
+                                if (listener != null) {
+                                    listener.onProgress((float) info.presentationTimeUs / (float) duration * 100);
+                                }
+                                
                                 if (!inputDone) {
                                     boolean eof = false;
                                     int index = extractor.getSampleTrackIndex();
