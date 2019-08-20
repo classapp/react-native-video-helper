@@ -465,6 +465,8 @@ public class MediaController {
                             } else {
                                 outputSurface = new OutputSurface(resultWidth, resultHeight, rotateRender);
                             }
+                            
+                            Thread.sleep(500); // Added to avoid crashes on Samsung devices while executing the line below.
                             decoder.configure(inputFormat, outputSurface.getSurface(), null, 0);
                             decoder.start();
 
