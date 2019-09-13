@@ -25,7 +25,7 @@
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *videoPixelBufferAdaptor;
 @property (nonatomic, strong) AVAssetWriterInput *audioInput;
 @property (nonatomic, strong) dispatch_queue_t inputQueue;
-@property (nonatomic, strong) void (^completionHandler)();
+@property (nonatomic, strong) void (^completionHandler)(void);
 
 @end
 
@@ -52,7 +52,7 @@
     return self;
 }
 
-- (void)exportAsynchronouslyWithCompletionHandler:(void (^)())handler
+- (void)exportAsynchronouslyWithCompletionHandler:(void (^)(void))handler
 {
     NSParameterAssert(handler != nil);
     [self cancelExport];
@@ -312,7 +312,7 @@
     }
     
     videoComposition.frameDuration = CMTimeMake(1, trackFrameRate);
-    CGSize targetSize = CGSizeMake([self.videoSettings[AVVideoWidthKey] floatValue], [self.videoSettings[AVVideoHeightKey] floatValue]);
+    // CGSize targetSize = CGSizeMake([self.videoSettings[AVVideoWidthKey] floatValue], [self.videoSettings[AVVideoHeightKey] floatValue]);
     CGSize naturalSize = [videoTrack naturalSize];
     
     CGAffineTransform transform = videoTrack.preferredTransform;

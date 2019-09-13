@@ -16,5 +16,9 @@
     "video"
   ],
   "author": "",
-  "license": ""
+  "license": "",
+  "dependencies": {
+    "react": "^16.9.0",
+    "react-native": "^0.60.5"
+  }
 }
