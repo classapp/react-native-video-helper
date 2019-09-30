@@ -1,18 +1,21 @@
 require "json"
+
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 
-Pod::Spec.new do |spec|
-
-  spec.name                   = "react-native-video-helper"
-  spec.version                = package['version']
-  spec.summary                = "React Native video helper library, to compress and trim videos."
-  spec.description            = "React Native video helper library, to compress and trim videos using AVFoundation in iOS and MediaCodec in Android"
-  spec.homepage               = "https://github.com/classapp/react-native-video-helper/"
-  spec.license                = { :type => "MIT", :file => "LICENSE" }
+Pod::Spec.new do |s|
+  s.name         = "react-native-video-helper"
+  s.version      = package["version"]
+  s.summary      = package["description"]
+  s.description  = package["description"]
+  s.homepage     = "https://github.com/classapp/react-native-video-helper"
+  s.license      = "MIT"
+  s.license    = { :type => "MIT", :file => "LICENCE" }
   spec.author                 = package['author']
-  spec.source                 = { :git => "https://github.com/classapp/react-native-video-helper.git", :tag => "#{spec.version}" }
-  spec.source_files           = "ios", "ios/*.{h,m}"
-  spec.platform               = :ios, "8.0"
-  spec.dependency 'React'
+  s.platforms    = { :ios => "9.0" }
+  s.source       = { :git => "https://github.com/classapp/react-native-video-helper.git", :tag => "#{s.version}" }
+
+  s.source_files = "ios/*.{h,m}"
   
+  s.dependency "React"
+
 end
