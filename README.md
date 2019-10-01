@@ -5,12 +5,20 @@
 
 `$ npm install react-native-video-helper --save`
 
-### Mostly automatic installation
+## Supported versions
+
+| React-Native Version  | Video-Helper Supported Version  |
+|---|---|
+| RN < 0.60 |  <= 1.3.8  |
+| RN >= 0.60 | >= 1.4.0  |
+
+## If you are using react-native before 0.60 version, you can link using:
+
+### Automatic installation
 
 `$ react-native link react-native-video-helper`
 
 ### Manual installation
-
 
 #### iOS
 
