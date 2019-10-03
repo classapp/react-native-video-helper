@@ -5,6 +5,7 @@
   "description": "React Native video helper library, to compress and trim videos.",
   "main": "index.js",
   "licence": "MIT",
+  "author": "Samin Shams",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/classapp/react-native-video-helper.git",
