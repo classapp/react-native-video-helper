@@ -1,7 +1,7 @@
 {
   "name": "react-native-video-helper",
   "title": "React Native React Native Video Helper",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "React Native video helper library, to compress and trim videos.",
   "main": "index.js",
   "licence": "MIT",
