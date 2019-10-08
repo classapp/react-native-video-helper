@@ -68,7 +68,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     } else if ([options[@"quality"] isEqual: @"high"]) {
         maxWidth = 1920;
         maxHeight = 1920;
-        bitrate = 5000000;
+        bitrate = 10000000;
     }
     
     CGFloat originalWidth = naturalSize.width;
@@ -122,7 +122,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     
     encoder.audioSettings = @{
       AVFormatIDKey: @(kAudioFormatMPEG4AAC),
-      AVNumberOfChannelsKey: @1,
+      AVNumberOfChannelsKey: @2,
       AVSampleRateKey: @44100,
       AVEncoderBitRateKey: @128000,
     };
@@ -130,7 +130,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     encoder.outputFileType = AVFileTypeMPEG4;
     encoder.outputURL = [NSURL fileURLWithPath:
                          [NSTemporaryDirectory() stringByAppendingPathComponent:
-                          [NSString stringWithFormat:@"compressed_%@.mov", [[NSProcessInfo processInfo] globallyUniqueString]
+                          [NSString stringWithFormat:@"%@.mp4", [[NSProcessInfo processInfo] globallyUniqueString]
                           ]]];
     encoder.shouldOptimizeForNetworkUse = true;
     
@@ -164,7 +164,8 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
              [result setValue:@(filesize) forKey:@"size"];
              [result setValue:@(width) forKey:@"width"];
              [result setValue:@(height) forKey:@"height"];
-             [result setValue:@(encoder.asset.duration.value/1000) forKey:@"duration"];
+             [result setValue:@(encoder.timeRange.duration.value) forKey:@"duration"];
+             [result setValue:@"video/mp4" forKey:@"mime"];
              resolve(result);
          } else {
              NSLog(@"Video export failed with error: %@ (%ld)", encoder.error.localizedDescription, encoder.error.code);
