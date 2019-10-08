@@ -68,7 +68,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     } else if ([options[@"quality"] isEqual: @"high"]) {
         maxWidth = 1920;
         maxHeight = 1920;
-        bitrate = 2600000;
+        bitrate = 5000000;
     }
     
     CGFloat originalWidth = naturalSize.width;
@@ -98,7 +98,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
         return;
     }
     
-    if (endT && [endT floatValue] > duration) {
+    if (endT && ([endT floatValue]<=0 || [endT floatValue] > duration)) {
         endT = nil;
     }
     
@@ -115,7 +115,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
       AVVideoHeightKey: @(height),
       AVVideoCompressionPropertiesKey: @{
               AVVideoAverageBitRateKey: @(bitrate > originalBitrate ? originalBitrate : bitrate),
-          AVVideoProfileLevelKey: AVVideoProfileLevelH264BaselineAutoLevel,
+          AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel,
         },
     };
     
