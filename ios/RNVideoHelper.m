@@ -145,12 +145,27 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
          
          if (encoder.status == AVAssetExportSessionStatusCompleted)
          {
+             NSMutableDictionary *result = [NSMutableDictionary new];
              NSDate *methodFinish = [NSDate date];
              NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
              NSLog(@"executionTime = %f", executionTime);
              
              NSLog(@"Video export succeeded");
-             resolve(encoder.outputURL.absoluteString);
+             //
+             NSString *path=[encoder.outputURL.absoluteString stringByReplacingOccurrencesOfString:@"file://" withString:@""];
+             NSFileManager *fileManager = [NSFileManager defaultManager];
+             NSDictionary *attrs = [fileManager attributesOfItemAtPath:path error: nil];
+             uint64_t filesize = [attrs fileSize];
+             //
+//             AVAssetTrack *videoTrack = [[encoder.asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+//             CGSize pixSize=[videoTrack naturalSize];
+             //
+             [result setValue:encoder.outputURL.absoluteString forKey:@"path"];
+             [result setValue:@(filesize) forKey:@"size"];
+             [result setValue:@(width) forKey:@"width"];
+             [result setValue:@(height) forKey:@"height"];
+             [result setValue:@(encoder.asset.duration.value/1000) forKey:@"duration"];
+             resolve(result);
          } else {
              NSLog(@"Video export failed with error: %@ (%ld)", encoder.error.localizedDescription, encoder.error.code);
              reject(@"video_export_error", [NSString stringWithFormat:@"Video export failed with error: %@ (%ld)", encoder.error.localizedDescription, encoder.error.code], nil);
