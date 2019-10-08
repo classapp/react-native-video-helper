@@ -98,7 +98,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
         return;
     }
     
-    if (endT && [endT floatValue] > duration) {
+    if (endT && ([endT floatValue]<=0 || [endT floatValue] > duration) {
         endT = nil;
     }
     
