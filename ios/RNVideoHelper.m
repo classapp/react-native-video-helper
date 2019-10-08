@@ -116,6 +116,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
       AVVideoCompressionPropertiesKey: @{
               AVVideoAverageBitRateKey: @(bitrate > originalBitrate ? originalBitrate : bitrate),
           AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel,
+          AVVideoMaxKeyFrameIntervalKey:@(30)
         },
     };
     
