@@ -32,6 +32,9 @@ public class MediaController {
     private final static int PROCESSOR_TYPE_TI = 5;
     private static volatile MediaController Instance = null;
     private boolean videoConvertFirstWrite = true;
+    //
+    protected int resultWidth = 0;
+    protected int resultHeight = 0;
 
     interface CompressProgressListener {
         void onProgress(float percent);
@@ -116,7 +119,7 @@ public class MediaController {
 
         @Override
         public void run() {
-            MediaController.getInstance().convertVideo(videoPath, destPath, 0, -1, -1,null);
+            MediaController.getInstance().convertVideo(videoPath, destPath, 0, -1, -1, null);
         }
     }
 
@@ -145,6 +148,7 @@ public class MediaController {
 
     /**
      * Background conversion for queueing tasks
+     *
      * @param path source file to compress
      * @param dest destination directory to put result
      */
@@ -235,13 +239,14 @@ public class MediaController {
 
     /**
      * Perform the actual video compression. Processes the frames and does the magic
-     * @param sourcePath the source uri for the file as per
+     *
+     * @param sourcePath      the source uri for the file as per
      * @param destinationPath the destination directory where compressed video is eventually saved
      * @return
      */
     @TargetApi(16)
     public boolean convertVideo(final String sourcePath, String destinationPath, int quality, long startT, long endT, CompressProgressListener listener) {
-        this.path=sourcePath;
+        this.path = sourcePath;
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(path);
@@ -283,7 +288,7 @@ public class MediaController {
             case COMPRESS_QUALITY_HIGH:
                 maxWidth = 1920;
                 maxHeight = 1920;
-                bitrate = 2600000;
+                bitrate = 8000000;
                 break;
         }
 
@@ -293,8 +298,8 @@ public class MediaController {
         float finalRatio = bestRatio < 1 ? bestRatio : 1;
         // output
         // width and height must be multiples of 2
-        int resultWidth = 2 * (Math.round((originalWidth * finalRatio)/2));
-        int resultHeight = 2 * (Math.round((originalHeight * finalRatio)/2));
+        resultWidth = 2 * (Math.round((originalWidth * finalRatio) / 2));
+        resultHeight = 2 * (Math.round((originalHeight * finalRatio) / 2));
 
         int rotateRender = 0;
 
@@ -444,7 +449,7 @@ public class MediaController {
                             MediaFormat outputFormat = MediaFormat.createVideoFormat(MIME_TYPE, resultWidth, resultHeight);
                             outputFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, colorFormat);
                             outputFormat.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
-                            outputFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 25);
+                            outputFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
                             outputFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 10);
                             if (Build.VERSION.SDK_INT < 18) {
                                 outputFormat.setInteger("stride", resultWidth + 32);
@@ -465,7 +470,7 @@ public class MediaController {
                             } else {
                                 outputSurface = new OutputSurface(resultWidth, resultHeight, rotateRender);
                             }
-                            
+
                             Thread.sleep(500); // Added to avoid crashes on Samsung devices while executing the line below.
                             decoder.configure(inputFormat, outputSurface.getSurface(), null, 0);
                             decoder.start();
@@ -722,7 +727,7 @@ public class MediaController {
         }
         didWriteData(true, error);
 
-        cachedFile=cacheFile;
+        cachedFile = cacheFile;
 
        /* File fdelete = inputFile;
         if (fdelete.exists()) {
@@ -734,9 +739,9 @@ public class MediaController {
         }*/
 
         //inputFile.delete();
-        Log.e("ViratPath",path+"");
-        Log.e("ViratPath",cacheFile.getPath()+"");
-        Log.e("ViratPath",inputFile.getPath()+"");
+        Log.e("ViratPath", path + "");
+        Log.e("ViratPath", cacheFile.getPath() + "");
+        Log.e("ViratPath", inputFile.getPath() + "");
 
 
        /* Log.e("ViratPath",path+"");
@@ -762,8 +767,8 @@ public class MediaController {
         }
 */
 
-    //    cacheFile.delete();
-       // inputFile.delete();
+        //    cacheFile.delete();
+        // inputFile.delete();
         return true;
     }
 }
