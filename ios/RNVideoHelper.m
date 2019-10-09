@@ -68,7 +68,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     } else if ([options[@"quality"] isEqual: @"high"]) {
         maxWidth = 1920;
         maxHeight = 1920;
-        bitrate = 10000000;
+        bitrate = 8000000;
     }
     
     CGFloat originalWidth = naturalSize.width;
