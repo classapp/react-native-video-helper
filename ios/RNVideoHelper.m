@@ -71,8 +71,8 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
         maxHeight = 1920;
         bitrate = 2600000;
     }
-    if(recBitRate&&[recBitRate value]>0){
-        bitrate = recBitRate;
+    if(recBitRate && [recBitRate floatValue] > 0){
+        bitrate = [recBitRate floatValue];
     }
     
     CGFloat originalWidth = naturalSize.width;

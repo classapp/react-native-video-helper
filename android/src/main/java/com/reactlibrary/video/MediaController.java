@@ -119,7 +119,7 @@ public class MediaController {
 
         @Override
         public void run() {
-            MediaController.getInstance().convertVideo(videoPath, destPath, 0, -1, -1, null);
+            MediaController.getInstance().convertVideo(videoPath, destPath, 0, -1, -1,-1, null);
         }
     }
 
@@ -245,7 +245,7 @@ public class MediaController {
      * @return
      */
     @TargetApi(16)
-    public boolean convertVideo(final String sourcePath, String destinationPath, int quality, long startT, long endT,long recBitRate, CompressProgressListener listener) {
+    public boolean convertVideo(final String sourcePath, String destinationPath, int quality, long startT, long endT,int recBitRate, CompressProgressListener listener) {
         this.path = sourcePath;
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();

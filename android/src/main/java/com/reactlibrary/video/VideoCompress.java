@@ -7,7 +7,7 @@ import java.io.File;
 public class VideoCompress {
     private static final String TAG = VideoCompress.class.getSimpleName();
 
-    public static VideoCompressTask compressVideo(String srcPath, String destPath, String quality, long startTime, long endTime,long bitRate, CompressListener listener) {
+    public static VideoCompressTask compressVideo(String srcPath, String destPath, String quality, long startTime, long endTime,int bitRate, CompressListener listener) {
         int finalQuality = MediaController.COMPRESS_QUALITY_LOW;
 
         if (quality.equals("high")) {
@@ -26,10 +26,10 @@ public class VideoCompress {
         private int mQuality;
         private long mStartTime;
         private long mEndTime;
-        private long mBitRate;
+        private int mBitRate;
         private File mOutFile;
 
-        public VideoCompressTask(CompressListener listener, int quality, long startTime, long endTime,long bitRate) {
+        public VideoCompressTask(CompressListener listener, int quality, long startTime, long endTime,int bitRate) {
             mListener = listener;
             mQuality = quality;
             mStartTime = startTime;
