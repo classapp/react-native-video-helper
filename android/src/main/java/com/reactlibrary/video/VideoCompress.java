@@ -7,7 +7,7 @@ import java.io.File;
 public class VideoCompress {
     private static final String TAG = VideoCompress.class.getSimpleName();
 
-    public static VideoCompressTask compressVideo(String srcPath, String destPath, String quality, long startTime, long endTime, CompressListener listener) {
+    public static VideoCompressTask compressVideo(String srcPath, String destPath, String quality, long startTime, long endTime,long bitRate, CompressListener listener) {
         int finalQuality = MediaController.COMPRESS_QUALITY_LOW;
 
         if (quality.equals("high")) {
@@ -16,7 +16,7 @@ public class VideoCompress {
             finalQuality = MediaController.COMPRESS_QUALITY_MEDIUM;
         }
 
-        VideoCompressTask task = new VideoCompressTask(listener, finalQuality, startTime, endTime);
+        VideoCompressTask task = new VideoCompressTask(listener, finalQuality, startTime, endTime,bitRate);
         task.execute(srcPath, destPath);
         return task;
     }
@@ -26,12 +26,14 @@ public class VideoCompress {
         private int mQuality;
         private long mStartTime;
         private long mEndTime;
+        private long mBitRate;
         private File mOutFile;
 
-        public VideoCompressTask(CompressListener listener, int quality, long startTime, long endTime) {
+        public VideoCompressTask(CompressListener listener, int quality, long startTime, long endTime,long bitRate) {
             mListener = listener;
             mQuality = quality;
             mStartTime = startTime;
+            mBitRate = bitRate;
             mEndTime = endTime;
         }
 
@@ -46,7 +48,7 @@ public class VideoCompress {
         @Override
         protected Boolean doInBackground(String... paths) {
             mOutFile = new File(paths[1]);
-            return MediaController.getInstance().convertVideo(paths[0], paths[1], mQuality, mStartTime, mEndTime, new MediaController.CompressProgressListener() {
+            return MediaController.getInstance().convertVideo(paths[0], paths[1], mQuality, mStartTime, mEndTime,mBitRate, new MediaController.CompressProgressListener() {
                 @Override
                 public void onProgress(float percent) {
                     publishProgress(percent);

@@ -245,7 +245,7 @@ public class MediaController {
      * @return
      */
     @TargetApi(16)
-    public boolean convertVideo(final String sourcePath, String destinationPath, int quality, long startT, long endT, CompressProgressListener listener) {
+    public boolean convertVideo(final String sourcePath, String destinationPath, int quality, long startT, long endT,long recBitRate, CompressProgressListener listener) {
         this.path = sourcePath;
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
@@ -288,8 +288,11 @@ public class MediaController {
             case COMPRESS_QUALITY_HIGH:
                 maxWidth = 1920;
                 maxHeight = 1920;
-                bitrate = 10000000;
+                bitrate = 2600000;
                 break;
+        }
+        if(recBitRate>0){
+            bitrate = recBitRate;
         }
 
         float widthRatio = maxWidth / originalWidth;

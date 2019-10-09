@@ -51,6 +51,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     
     NSNumber *startT = @([options[@"startTime"] floatValue]);
     NSNumber *endT = @([options[@"endTime"] floatValue]);
+    NSNumber *recBitRate = @([options[@"bitRate"] floatValue]);
     
     AVAssetTrack *videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
 
@@ -68,7 +69,10 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     } else if ([options[@"quality"] isEqual: @"high"]) {
         maxWidth = 1920;
         maxHeight = 1920;
-        bitrate = 10000000;
+        bitrate = 2600000;
+    }
+    if(recBitRate&&[recBitRate value]>0){
+        bitrate = recBitRate;
     }
     
     CGFloat originalWidth = naturalSize.width;

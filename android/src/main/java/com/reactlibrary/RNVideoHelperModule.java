@@ -50,9 +50,10 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
         String quality = options.hasKey("quality") ? options.getString("quality") : "";
         final long startTime = options.hasKey("startTime") ? (long) options.getDouble("startTime") : -1;
         final long endTime = options.hasKey("endTime") ? (long) options.getDouble("endTime") : -1;
+        final long recBitRate = options.hasKey("bitRate") ? (long) options.getDouble("bitRate") : -1;
 
         try {
-            VideoCompress.compressVideo(inputUri, outputUri, quality, startTime, endTime, new VideoCompress.CompressListener() {
+            VideoCompress.compressVideo(inputUri, outputUri, quality, startTime, endTime,recBitRate, new VideoCompress.CompressListener() {
                 @Override
                 public void onStart() {
                     //Start Compress
