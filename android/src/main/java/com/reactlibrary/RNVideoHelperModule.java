@@ -2,7 +2,6 @@
 package com.reactlibrary;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.JavaOnlyMap;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -22,30 +21,30 @@ import com.reactlibrary.video.*;
 
 public class RNVideoHelperModule extends ReactContextBaseJavaModule {
 
-    private void sendProgress(ReactContext reactContext, float progress) {
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("progress", progress);
-    }
+  private void sendProgress(ReactContext reactContext, float progress) {
+    reactContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit("progress", progress);
+  }
 
-    private final ReactApplicationContext reactContext;
+  private final ReactApplicationContext reactContext;
 
-    public RNVideoHelperModule(ReactApplicationContext reactContext) {
-        super(reactContext);
-        this.reactContext = reactContext;
-    }
+  public RNVideoHelperModule(ReactApplicationContext reactContext) {
+    super(reactContext);
+    this.reactContext = reactContext;
+  }
 
-    @Override
-    public String getName() {
-        return "RNVideoHelper";
-    }
+  @Override
+  public String getName() {
+    return "RNVideoHelper";
+  }
 
-    @ReactMethod
-    public void compress(String source, ReadableMap options, final Promise pm) {
-        String inputUri = Uri.parse(source).getPath();
-        File outputDir = reactContext.getCacheDir();
+  @ReactMethod
+  public void compress(String source, ReadableMap options, final Promise pm) {
+    String inputUri = Uri.parse(source).getPath();
+    File outputDir = reactContext.getCacheDir();
 
-        final String outputUri = String.format("%s/%s.mp4", outputDir.getPath(), UUID.randomUUID().toString());
+    final String outputUri = String.format("%s/%s.mp4", outputDir.getPath(), UUID.randomUUID().toString());
 
         String quality = options.hasKey("quality") ? options.getString("quality") : "";
         final long startTime = options.hasKey("startTime") ? (long) options.getDouble("startTime") : -1;
@@ -72,21 +71,21 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
                     map.putString("mime", "video/mp4");
                     pm.resolve(map);
 
-                }
-
-                @Override
-                public void onFail() {
-                    //Failed
-                    pm.reject("ERROR", "Failed to compress video");
-                }
-
-                @Override
-                public void onProgress(float percent) {
-                    sendProgress(reactContext, percent / 100);
-                }
-            });
-        } catch (Throwable e) {
-            e.printStackTrace();
         }
+
+        @Override
+        public void onFail() {
+          //Failed
+          pm.reject("ERROR", "Failed to compress video");
+        }
+
+        @Override
+        public void onProgress(float percent) {
+          sendProgress(reactContext, percent/100);
+        }
+      });
+    } catch ( Throwable e ) {
+      e.printStackTrace();
     }
+  }
 }

@@ -148,7 +148,6 @@ public class MediaController {
 
     /**
      * Background conversion for queueing tasks
-     *
      * @param path source file to compress
      * @param dest destination directory to put result
      */
@@ -239,14 +238,13 @@ public class MediaController {
 
     /**
      * Perform the actual video compression. Processes the frames and does the magic
-     *
-     * @param sourcePath      the source uri for the file as per
+     * @param sourcePath the source uri for the file as per
      * @param destinationPath the destination directory where compressed video is eventually saved
      * @return
      */
     @TargetApi(16)
     public boolean convertVideo(final String sourcePath, String destinationPath, int quality, long startT, long endT,int recBitRate, CompressProgressListener listener) {
-        this.path = sourcePath;
+        this.path=sourcePath;
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(path);
@@ -473,7 +471,7 @@ public class MediaController {
                             } else {
                                 outputSurface = new OutputSurface(resultWidth, resultHeight, rotateRender);
                             }
-
+                            
                             Thread.sleep(500); // Added to avoid crashes on Samsung devices while executing the line below.
                             decoder.configure(inputFormat, outputSurface.getSurface(), null, 0);
                             decoder.start();
@@ -730,7 +728,7 @@ public class MediaController {
         }
         didWriteData(true, error);
 
-        cachedFile = cacheFile;
+        cachedFile=cacheFile;
 
        /* File fdelete = inputFile;
         if (fdelete.exists()) {
@@ -742,9 +740,9 @@ public class MediaController {
         }*/
 
         //inputFile.delete();
-        Log.e("ViratPath", path + "");
-        Log.e("ViratPath", cacheFile.getPath() + "");
-        Log.e("ViratPath", inputFile.getPath() + "");
+        Log.e("ViratPath",path+"");
+        Log.e("ViratPath",cacheFile.getPath()+"");
+        Log.e("ViratPath",inputFile.getPath()+"");
 
 
        /* Log.e("ViratPath",path+"");
@@ -770,8 +768,8 @@ public class MediaController {
         }
 */
 
-        //    cacheFile.delete();
-        // inputFile.delete();
+    //    cacheFile.delete();
+       // inputFile.delete();
         return true;
     }
 }
