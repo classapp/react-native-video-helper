@@ -45,7 +45,7 @@ public class VideoCompress {
         @Override
         protected Boolean doInBackground(String... paths) {
             MediaController media = MediaController.getInstance();
-            media.SetDefaultOrientation = defaultOrientation;
+            media.SetDefaultOrientation(defaultOrientation);
 
             return media.convertVideo(paths[0], paths[1], mQuality, mStartTime, mEndTime, new MediaController.CompressProgressListener() {
                 @Override
