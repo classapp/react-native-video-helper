@@ -32,9 +32,14 @@ public class MediaController {
     private final static int PROCESSOR_TYPE_TI = 5;
     private static volatile MediaController Instance = null;
     private boolean videoConvertFirstWrite = true;
+    private int DEFAULT_ORIENTATION = 0;
 
     interface CompressProgressListener {
         void onProgress(float percent);
+    }
+
+    public void SetDefaultOrientation (int DEFAULT_ORIENTATION) {
+        this.DEFAULT_ORIENTATION = DEFAULT_ORIENTATION;
     }
 
     public static MediaController getInstance() {
@@ -261,7 +266,7 @@ public class MediaController {
             endTime = duration;
         }
 
-        int rotationValue = Integer.valueOf(rotation);
+        int rotationValue = rotation == null ? this.DEFAULT_ORIENTATION : Integer.valueOf(rotation);
         float originalWidth = Integer.valueOf(width);
         float originalHeight = Integer.valueOf(height);
 
