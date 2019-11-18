@@ -52,6 +52,7 @@ RNVideoHelper.compress(sourceUri, {
 	startTime: 10, // optional, in seconds, defaults to 0
 	endTime: 100, //  optional, in seconds, defaults to video duration
 	quality: 'low', // default low, can be medium or high
+	defaultOrientation: 0 // By default is 0, some devices not save this property in metadata. Can be between 0 - 360
 }).progress(value => {
 	console.warn('progress', value); // Int with progress value from 0 to 1
 }).then(compressedUri => {
