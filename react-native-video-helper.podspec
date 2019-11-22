@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.description  = "React Native video helper library, to compress and trim videos in Android and IOS."
   s.homepage     = "https://github.com/classapp/react-native-video-helper"
   s.license      = "MIT"
-  s.license      = { :type => "MIT", :file => "LICENCE" }
+  s.license      = { :type => "MIT", :file => "LICENSE" }
   s.author       = package['author']
   s.platforms    = { :ios => "9.0" }
   s.source       = { :git => "https://github.com/classapp/react-native-video-helper.git", :tag => "#{s.version}" }
