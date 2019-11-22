@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.license      = "MIT"
   s.license      = { :type => "MIT", :file => "LICENCE" }
   s.author       = package['author']
-  s.platforms    = { :ios => "8.0" }
+  s.platforms    = { :ios => "9.0" }
   s.source       = { :git => "https://github.com/classapp/react-native-video-helper.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/*.{h,m}"
