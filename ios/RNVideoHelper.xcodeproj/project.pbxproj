@@ -9,17 +9,6 @@
 /* Begin PBXBuildFile section */
 		5D9235F821BBCA0200D86DB9 /* SDAVAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D9235F721BBCA0200D86DB9 /* SDAVAssetExportSession.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNVideoHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNVideoHelper.m */; };
-		F39DA093232A845700AF2BD9 /* libcxxreact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA07C232A839000AF2BD9 /* libcxxreact.a */; };
-		F39DA095232A845700AF2BD9 /* libdouble-conversion.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA088232A839000AF2BD9 /* libdouble-conversion.a */; };
-		F39DA097232A845700AF2BD9 /* libjsi-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA090232A839000AF2BD9 /* libjsi-tvOS.a */; };
-		F39DA098232A845700AF2BD9 /* libjsi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA08C232A839000AF2BD9 /* libjsi.a */; };
-		F39DA099232A845700AF2BD9 /* libjsiexecutor-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA092232A839000AF2BD9 /* libjsiexecutor-tvOS.a */; };
-		F39DA09A232A845700AF2BD9 /* libjsiexecutor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA08E232A839000AF2BD9 /* libjsiexecutor.a */; };
-		F39DA09B232A845700AF2BD9 /* libjsinspector-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA082232A839000AF2BD9 /* libjsinspector-tvOS.a */; };
-		F39DA09C232A845700AF2BD9 /* libjsinspector.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA080232A839000AF2BD9 /* libjsinspector.a */; };
-		F39DA09D232A845700AF2BD9 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA074232A839000AF2BD9 /* libReact.a */; };
-		F39DA09F232A845700AF2BD9 /* libthird-party.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA084232A839000AF2BD9 /* libthird-party.a */; };
-		F39DA0A1232A845700AF2BD9 /* libyoga.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F39DA078232A839000AF2BD9 /* libyoga.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -382,17 +371,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F39DA093232A845700AF2BD9 /* libcxxreact.a in Frameworks */,
-				F39DA095232A845700AF2BD9 /* libdouble-conversion.a in Frameworks */,
-				F39DA097232A845700AF2BD9 /* libjsi-tvOS.a in Frameworks */,
-				F39DA098232A845700AF2BD9 /* libjsi.a in Frameworks */,
-				F39DA099232A845700AF2BD9 /* libjsiexecutor-tvOS.a in Frameworks */,
-				F39DA09A232A845700AF2BD9 /* libjsiexecutor.a in Frameworks */,
-				F39DA09B232A845700AF2BD9 /* libjsinspector-tvOS.a in Frameworks */,
-				F39DA09C232A845700AF2BD9 /* libjsinspector.a in Frameworks */,
-				F39DA09D232A845700AF2BD9 /* libReact.a in Frameworks */,
-				F39DA09F232A845700AF2BD9 /* libthird-party.a in Frameworks */,
-				F39DA0A1232A845700AF2BD9 /* libyoga.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 public class VideoCompress {
     private static final String TAG = VideoCompress.class.getSimpleName();
 
-    public static VideoCompressTask compressVideo(String srcPath, String destPath, String quality, long startTime, long endTime, CompressListener listener) {
+    public static VideoCompressTask compressVideo(String srcPath, String destPath, String quality, long startTime, long endTime, CompressListener listener, int defaultOrientation) {
         int finalQuality = MediaController.COMPRESS_QUALITY_LOW;
 
         if (quality.equals("high")) {
@@ -14,7 +14,7 @@ public class VideoCompress {
             finalQuality = MediaController.COMPRESS_QUALITY_MEDIUM;
         }
 
-        VideoCompressTask task = new VideoCompressTask(listener, finalQuality, startTime, endTime);
+        VideoCompressTask task = new VideoCompressTask(listener, finalQuality, startTime, endTime, defaultOrientation);
         task.execute(srcPath, destPath);
         return task;
     }
@@ -24,12 +24,14 @@ public class VideoCompress {
         private int mQuality;
         private long mStartTime;
         private long mEndTime;
+        private int defaultOrientation;
 
-        public VideoCompressTask(CompressListener listener, int quality, long startTime, long endTime) {
+        public VideoCompressTask(CompressListener listener, int quality, long startTime, long endTime, int defaultOrientation) {
             mListener = listener;
             mQuality = quality;
             mStartTime = startTime;
             mEndTime = endTime;
+            this.defaultOrientation = defaultOrientation;
         }
 
         @Override
@@ -42,7 +44,10 @@ public class VideoCompress {
 
         @Override
         protected Boolean doInBackground(String... paths) {
-            return MediaController.getInstance().convertVideo(paths[0], paths[1], mQuality, mStartTime, mEndTime, new MediaController.CompressProgressListener() {
+            MediaController media = MediaController.getInstance();
+            media.SetDefaultOrientation(defaultOrientation);
+
+            return media.convertVideo(paths[0], paths[1], mQuality, mStartTime, mEndTime, new MediaController.CompressProgressListener() {
                 @Override
                 public void onProgress(float percent) {
                     publishProgress(percent);
