@@ -80,7 +80,7 @@ RCT_EXPORT_METHOD(compress:(NSString *)source options:(NSDictionary *)options re
     
     CGSize transformedVideoSize =
     CGSizeApplyAffineTransform(videoTrack.naturalSize, videoTrack.preferredTransform);
-    bool videoIsPortrait = transformedVideoSize.width < transformedVideoSize.height;
+    bool videoIsPortrait = ABS(transformedVideoSize.width) < ABS(transformedVideoSize.height);
 
     if (videoIsPortrait && (originalWidth > originalHeight)) {
         originalWidth = naturalSize.height;
