@@ -50,6 +50,7 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
         final long startTime = options.hasKey("startTime") ? (long) options.getDouble("startTime") : -1;
         final long endTime = options.hasKey("endTime") ? (long) options.getDouble("endTime") : -1;
         final int recBitRate = options.hasKey("bitRate") ?  options.getInt("bitRate") : -1;
+    int defaultOrientation = options.hasKey("defaultOrientation") ? (int)options.getInt("defaultOrientation") : 0;
 
         try {
             VideoCompress.compressVideo(inputUri, outputUri, quality, startTime, endTime,recBitRate, new VideoCompress.CompressListener() {
@@ -83,7 +84,7 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
         public void onProgress(float percent) {
           sendProgress(reactContext, percent/100);
         }
-      });
+      }, defaultOrientation);
     } catch ( Throwable e ) {
       e.printStackTrace();
     }

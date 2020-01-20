@@ -9,8 +9,7 @@
 
 | React-Native Version  | Video-Helper Supported Version  |
 |---|---|
-| RN < 0.60 |  <= 1.3.8  |
-| RN >= 0.60 | >= 1.4.0  |
+| RN >= 0.60 | >= 1.4.3  |
 
 ## If you are using react-native before 0.60 version, you can link using:
 
@@ -53,6 +52,7 @@ RNVideoHelper.compress(sourceUri, {
 	endTime: 100, //  optional, in seconds, defaults to video duration
 	quality: 'low', // default low, can be medium or high
 	bitRate:1.3*1000*1000 //default low:1.3M,medium:1.9M,high:2.6M
+	defaultOrientation: 0 // By default is 0, some devices not save this property in metadata. Can be between 0 - 360
 }).progress(value => {
 	console.warn('progress', value); // Int with progress value from 0 to 1
 }).then(data => {
