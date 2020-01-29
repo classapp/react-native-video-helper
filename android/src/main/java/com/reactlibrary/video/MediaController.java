@@ -323,16 +323,16 @@ public class MediaController {
                 resultHeight = resultWidth;
                 resultWidth = temp;
                 rotationValue = 0;
-                rotateRender = 270;
+//                 rotateRender = 270;
             } else if (rotationValue == 180) {
-                rotateRender = 180;
-                rotationValue = 0;
+                rotationValue = 180;
+//                 rotateRender = 180;
             } else if (rotationValue == 270) {
                 int temp = resultHeight;
                 resultHeight = resultWidth;
                 resultWidth = temp;
                 rotationValue = 0;
-                rotateRender = 90;
+//                 rotateRender = 90;
             }
         }
 
