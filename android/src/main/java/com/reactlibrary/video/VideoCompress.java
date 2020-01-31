@@ -2,10 +2,12 @@ package com.reactlibrary.video;
 
 import android.os.AsyncTask;
 
+import java.io.File;
+
 public class VideoCompress {
     private static final String TAG = VideoCompress.class.getSimpleName();
 
-    public static VideoCompressTask compressVideo(String srcPath, String destPath, String quality, long startTime, long endTime, CompressListener listener, int defaultOrientation) {
+    public static VideoCompressTask compressVideo(String srcPath, String destPath, String quality, long startTime, long endTime,int bitRate, CompressListener listener, int defaultOrientation) {
         int finalQuality = MediaController.COMPRESS_QUALITY_LOW;
 
         if (quality.equals("high")) {
@@ -14,7 +16,7 @@ public class VideoCompress {
             finalQuality = MediaController.COMPRESS_QUALITY_MEDIUM;
         }
 
-        VideoCompressTask task = new VideoCompressTask(listener, finalQuality, startTime, endTime, defaultOrientation);
+        VideoCompressTask task = new VideoCompressTask(listener, finalQuality, startTime, endTime,bitRate, defaultOrientation);
         task.execute(srcPath, destPath);
         return task;
     }
@@ -24,12 +26,15 @@ public class VideoCompress {
         private int mQuality;
         private long mStartTime;
         private long mEndTime;
+        private int mBitRate;
+        private File mOutFile;
         private int defaultOrientation;
 
-        public VideoCompressTask(CompressListener listener, int quality, long startTime, long endTime, int defaultOrientation) {
+        public VideoCompressTask(CompressListener listener, int quality, long startTime, long endTime,int bitRate, int defaultOrientation) {
             mListener = listener;
             mQuality = quality;
             mStartTime = startTime;
+            mBitRate = bitRate;
             mEndTime = endTime;
             this.defaultOrientation = defaultOrientation;
         }
@@ -46,8 +51,8 @@ public class VideoCompress {
         protected Boolean doInBackground(String... paths) {
             MediaController media = MediaController.getInstance();
             media.SetDefaultOrientation(defaultOrientation);
-
-            return media.convertVideo(paths[0], paths[1], mQuality, mStartTime, mEndTime, new MediaController.CompressProgressListener() {
+            mOutFile = new File(paths[1]);
+            return media.convertVideo(paths[0], paths[1], mQuality, mStartTime, mEndTime,mBitRate, new MediaController.CompressProgressListener() {
                 @Override
                 public void onProgress(float percent) {
                     publishProgress(percent);
@@ -68,7 +73,9 @@ public class VideoCompress {
             super.onPostExecute(result);
             if (mListener != null) {
                 if (result) {
-                    mListener.onSuccess();
+                    final int width = MediaController.getInstance().resultWidth;
+                    final int height = MediaController.getInstance().resultHeight;
+                    mListener.onSuccess(mOutFile, width, height, (mEndTime - mStartTime)*1000);
                 } else {
                     mListener.onFail();
                 }
@@ -78,8 +85,11 @@ public class VideoCompress {
 
     public interface CompressListener {
         void onStart();
-        void onSuccess();
+
+        void onSuccess(File file, int width, int height, long duration);
+
         void onFail();
+
         void onProgress(float percent);
     }
 }
