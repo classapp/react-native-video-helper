@@ -33,7 +33,9 @@ public class MediaController {
     private static volatile MediaController Instance = null;
     private boolean videoConvertFirstWrite = true;
     private int DEFAULT_ORIENTATION = 0;
-
+    protected int resultWidth = 0;
+    protected int resultHeight = 0;
+    
     interface CompressProgressListener {
         void onProgress(float percent);
     }
@@ -301,8 +303,8 @@ public class MediaController {
         float finalRatio = bestRatio < 1 ? bestRatio : 1;
         // output
         // width and height must be multiples of 2
-        int resultWidth = 2 * (Math.round((originalWidth * finalRatio)/2));
-        int resultHeight = 2 * (Math.round((originalHeight * finalRatio)/2));
+        resultWidth = 2 * (Math.round((originalWidth * finalRatio)/2));
+        resultHeight = 2 * (Math.round((originalHeight * finalRatio)/2));
 
         int rotateRender = 0;
 
