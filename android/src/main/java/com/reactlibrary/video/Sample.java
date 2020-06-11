@@ -1,4 +1,4 @@
-package com.reactlibrary.video;
+package com.reactnativevideohelper.video;
 
 public class Sample {
     private long offset = 0;
