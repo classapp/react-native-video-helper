@@ -29,18 +29,6 @@ android {
         targetSdkVersion safeExtGet('targetSdkVersion', 28)
     }
 
-    flavorDimensions "react-native-video-helper"
-
-    productFlavors {
-        general {
-            dimension "react-native-video-helper"
-        }
-        mlkit {
-            dimension "react-native-video-helper"
-        }
-    }
-
-
     lintOptions {
         abortOnError false
         warning 'InvalidPackage'
