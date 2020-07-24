@@ -1,4 +1,4 @@
-package com.reactlibrary.video;
+package com.reactlibrary.videohelper.video;
 
 public class Sample {
     private long offset = 0;

@@ -1,4 +1,4 @@
-package com.reactlibrary.video;
+package com.reactlibrary.videohelper.video;
 
 import android.os.AsyncTask;
 

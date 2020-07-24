@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.reactlibrary.video;
+package com.reactlibrary.videohelper.video;
 
 import android.annotation.TargetApi;
 import android.opengl.EGL14;
