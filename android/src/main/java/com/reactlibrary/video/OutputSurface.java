@@ -1,6 +1,5 @@
 package com.rnvideohelper.video;
 
-import android.annotation.TargetApi;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES20;
 import android.view.Surface;
@@ -14,7 +13,6 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-@TargetApi(16)
 public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
 
     private static final int EGL_OPENGL_ES2_BIT = 4;
@@ -139,12 +137,8 @@ public class OutputSurface implements SurfaceTexture.OnFrameAvailableListener {
         return mSurface;
     }
 
-    public void changeFragmentShader(String fragmentShader) {
-        mTextureRender.changeFragmentShader(fragmentShader);
-    }
-
     public void awaitNewImage() {
-        final int TIMEOUT_MS = 5000;
+        final int TIMEOUT_MS = 2500;
         synchronized (mFrameSyncObject) {
             while (!mFrameAvailable) {
                 try {
