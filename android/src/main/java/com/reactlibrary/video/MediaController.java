@@ -558,7 +558,7 @@ public class MediaController {
                             }
                             
                             Thread.sleep(500); // Added to avoid crashes on Samsung devices while executing the line below.
-                            decoder.configure(inputFormat, outputSurface.getSurface(), null, 0);
+                            decoder.configure(videoFormat, outputSurface.getSurface(), null, 0);
                             decoder.start();
 
                             final int TIMEOUT_USEC = 2500;
