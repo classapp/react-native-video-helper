@@ -25,7 +25,7 @@ android {
     buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 16)
+        minSdkVersion safeExtGet('minSdkVersion', 17)
         targetSdkVersion safeExtGet('targetSdkVersion', 28)
     }
 
@@ -40,6 +40,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.arthenica:mobile-ffmpeg-full:4.4'
     implementation 'com.googlecode.mp4parser:isoparser:1.0.6'
     implementation 'org.aspectj:aspectjrt:1.7.3'
     implementation 'com.facebook.react:react-native:+'
