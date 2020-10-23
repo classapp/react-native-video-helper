@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.googlecode.mp4parser:isoparser:1.1.22'
+    implementation 'com.googlecode.mp4parser:isoparser:1.0.6'
     implementation 'org.aspectj:aspectjrt:1.7.3'
     implementation 'com.facebook.react:react-native:+'
 }
