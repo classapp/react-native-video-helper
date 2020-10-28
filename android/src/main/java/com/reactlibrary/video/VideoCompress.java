@@ -44,6 +44,8 @@ public class VideoCompress {
 
         @Override
         protected Boolean doInBackground(String... paths) {
+
+            // Need pass VideoEditedInfo
             MediaController media = MediaController.getInstance();
             media.SetDefaultOrientation(defaultOrientation);
 

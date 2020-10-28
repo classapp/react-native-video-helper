@@ -1,3 +1,11 @@
+/*
+ * This is the source code of Telegram for Android v. 5.x.x.
+ * It is licensed under GNU GPL v. 2 or later.
+ * You should have received a copy of the license in this archive (see LICENSE).
+ *
+ * Copyright Nikolai Kudashov, 2013-2018.
+ */
+
 package com.rnvideohelper.video;
 
 import android.media.MediaCodec;
@@ -101,6 +109,7 @@ public class MP4Builder {
             byteBuf.position(bufferInfo.offset);
             byteBuf.limit(bufferInfo.offset + bufferInfo.size);
             byteBuf.get(buff);
+
             ByteBuffer nativeBuffer = ByteBuffer.allocateDirect(bufferInfo.size);
             nativeBuffer.position(4);
             int indexOfNal = -1;
@@ -160,6 +169,10 @@ public class MP4Builder {
         return 0;
     }
 
+    public long getLastFrameTimestamp(int trackIndex) {
+        return currentMp4Movie.getLastFrameTimestamp(trackIndex);
+    }
+
     public int addTrack(MediaFormat mediaFormat, boolean isAudio) {
         return currentMp4Movie.addTrack(mediaFormat, isAudio);
     }
@@ -196,7 +209,7 @@ public class MP4Builder {
         return new FileTypeBox("isom", 512, minorBrands);
     }
 
-    private class InterleaveChunkMdat implements Box {
+    private static class InterleaveChunkMdat implements Box {
         private Container parent;
         private long contentSize = 1024 * 1024 * 1024;
         private long dataOffset = 0;
@@ -434,7 +447,7 @@ public class MP4Builder {
 
     protected void createStsc(Track track, SampleTableBox stbl) {
         SampleToChunkBox stsc = new SampleToChunkBox();
-        stsc.setEntries(new LinkedList<SampleToChunkBox.Entry>());
+        stsc.setEntries(new LinkedList<>());
 
         long lastOffset;
         int lastChunkNumber = 1;

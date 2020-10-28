@@ -50,6 +50,7 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
     int defaultOrientation = options.hasKey("defaultOrientation") ? (int)options.getInt("defaultOrientation") : 0;
 
     try {
+      
       VideoCompress.compressVideo(inputUri, outputUri, quality, startTime, endTime, new VideoCompress.CompressListener() {
         @Override
         public void onStart() {
