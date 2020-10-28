@@ -16,9 +16,14 @@ import java.io.File;
 import java.util.UUID;
 
 import com.rnvideohelper.video.*;
-import com.rnvideohelper.src.*;
 
 public class RNVideoHelperModule extends ReactContextBaseJavaModule {
+
+  private void sendProgress(ReactContext reactContext, float progress) {
+    reactContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit("progress", progress);
+  }
 
   private final ReactApplicationContext reactContext;
 
@@ -32,13 +37,6 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
     return "RNVideoHelper";
   }
 
-  /* Event handlers */
-  private void sendProgress(ReactContext reactContext, float progress) {
-    reactContext
-            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-            .emit("progress", progress);
-  }
-
   @ReactMethod
   public void compress(String source, ReadableMap options, final Promise pm) {
     String inputUri = Uri.parse(source).getPath();
@@ -47,67 +45,38 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
     final String outputUri = String.format("%s/%s.mp4", outputDir.getPath(), UUID.randomUUID().toString());
 
     String quality = options.hasKey("quality") ? options.getString("quality") : "";
-    int version = options.hasKey("version") ? options.getInt("version") : 2;
     long startTime = options.hasKey("startTime") ? (long)options.getDouble("startTime") : -1;
     long endTime = options.hasKey("endTime") ? (long)options.getDouble("endTime") : -1;
     int defaultOrientation = options.hasKey("defaultOrientation") ? (int)options.getInt("defaultOrientation") : 0;
 
     try {
-      if (version == 1) {
-          VideoCompress.compressVideo(inputUri, outputUri, quality, startTime, endTime, new VideoCompress.CompressListener() {
-                  @Override
-                  public void onStart() {
-                    //Start Compress
-                    Log.d("INFO", "Compression started");
-                  }
+      VideoCompress.compressVideo(inputUri, outputUri, quality, startTime, endTime, new VideoCompress.CompressListener() {
+        @Override
+        public void onStart() {
+          //Start Compress
+          Log.d("INFO", "Compression started");
+        }
 
-                  @Override
-                  public void onSuccess() {
-                    //Finish successfully
-                    pm.resolve(outputUri);
+        @Override
+        public void onSuccess() {
+          //Finish successfully
+          pm.resolve(outputUri);
 
-                  }
+        }
 
-                  @Override
-                  public void onFail() {
-                    //Failed
-                    pm.reject("ERROR", "Failed to compress video");
-                  }
+        @Override
+        public void onFail() {
+          //Failed
+          pm.reject("ERROR", "Failed to compress video");
+        }
 
-                  @Override
-                  public void onProgress(float percent) {
-                    sendProgress(reactContext, percent/100);
-                  }
-                }, defaultOrientation);
-      } else {
-          CompressVideo.compressVideo(inputUri, outputUri, quality, startTime, endTime, new CompressVideo.CompressListener() {
-                  @Override
-                  public void onStart() {
-                    //Start Compress
-                    Log.d("INFO", "Compression started");
-                  }
-
-                  @Override
-                  public void onSuccess() {
-                    //Finish successfully
-                    pm.resolve(outputUri);
-
-                  }
-
-                  @Override
-                  public void onFail() {
-                    //Failed
-                    pm.reject("ERROR", "Failed to compress video");
-                  }
-
-                  @Override
-                  public void onProgress(float percent) {
-                    sendProgress(reactContext, percent/100);
-                  }
-                }, defaultOrientation);
-      }
+        @Override
+        public void onProgress(float percent) {
+          sendProgress(reactContext, percent/100);
+        }
+      }, defaultOrientation);
     } catch ( Throwable e ) {
-        e.printStackTrace();
-    }      
+      e.printStackTrace();
+    }
   }
 }
