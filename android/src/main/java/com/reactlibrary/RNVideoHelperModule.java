@@ -9,8 +9,10 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import android.os.Build;
 import android.net.Uri;
 import android.util.Log;
+import android.os.Environment;
 
 import java.io.File;
 import java.util.UUID;
@@ -42,9 +44,15 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void compress(String source, ReadableMap options, final Promise pm) {
     String inputUri = Uri.parse(source).getPath();
-    File outputDir = reactContext.getCacheDir();
+    File outputDir = null;
 
-    final String outputUri = String.format("%s/%s.mp4", outputDir.getPath(), UUID.randomUUID().toString());
+    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+      outputDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+    } else {
+      outputDir = reactContext.getExternalFilesDir(Environment.DIRECTORY_DCIM);
+    }
+
+    final String outputUri = String.format("%s/%s.mp4", outputDir.getAbsolutePath(), UUID.randomUUID().toString());
 
     String quality = options.hasKey("quality") ? options.getString("quality") : "";
     int version = options.hasKey("version") ? options.getInt("version") : 2;
@@ -83,20 +91,19 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
           CompressVideo.compressVideo(inputUri, outputUri, quality, startTime, endTime, new CompressVideo.CompressListener() {
                   @Override
                   public void onStart() {
-                    //Start Compress
+                    // Start Compress
                     Log.d("INFO", "Compression started");
                   }
 
                   @Override
                   public void onSuccess() {
-                    //Finish successfully
+                    // Finish successfully
                     pm.resolve(outputUri);
-
                   }
 
                   @Override
                   public void onFail() {
-                    //Failed
+                    // Failed
                     pm.reject("ERROR", "Failed to compress video");
                   }
 
@@ -104,7 +111,7 @@ public class RNVideoHelperModule extends ReactContextBaseJavaModule {
                   public void onProgress(float percent) {
                     sendProgress(reactContext, percent/100);
                   }
-                }, defaultOrientation);
+                });
       }
     } catch ( Throwable e ) {
         e.printStackTrace();

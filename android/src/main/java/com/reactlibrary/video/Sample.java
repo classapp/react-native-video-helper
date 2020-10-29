@@ -1,8 +1,8 @@
 package com.rnvideohelper.video;
 
 public class Sample {
-    private long offset;
-    private long size;
+    private long offset = 0;
+    private long size = 0;
 
     public Sample(long offset, long size) {
         this.offset = offset;
