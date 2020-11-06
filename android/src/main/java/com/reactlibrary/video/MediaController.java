@@ -36,9 +36,14 @@ public class MediaController {
 
     private static volatile MediaController Instance = null;
     private boolean videoConvertFirstWrite = true;
+    private int DEFAULT_ORIENTATION = 0;
 
     interface CompressProgressListener {
         void onProgress(float percent);
+    }
+
+    public void SetDefaultOrientation (int DEFAULT_ORIENTATION) {
+        this.DEFAULT_ORIENTATION = DEFAULT_ORIENTATION;
     }
 
     public static MediaController getInstance() {
@@ -267,10 +272,10 @@ public class MediaController {
                 }
                 if (eof) {
                     inputDone = true;
-                }
             }
             if (videoTrackIndex >= 0) {
-                extractor.unselectTrack(videoTrackIndex);
+                extractor.unselectTrack(videoTra
+                }ckIndex);
             }
             if (audioTrackIndex >= 0) {
                 extractor.unselectTrack(audioTrackIndex);
@@ -336,7 +341,7 @@ public class MediaController {
             endTime = duration;
         }
 
-        int rotationValue = Integer.valueOf(rotation);
+        int rotationValue = rotation == null ? this.DEFAULT_ORIENTATION : Integer.valueOf(rotation);
         float originalWidth = Integer.valueOf(width);
         float originalHeight = Integer.valueOf(height);
 
@@ -551,6 +556,7 @@ public class MediaController {
                             } else {
                                 outputSurface = new OutputSurface(resultWidth, resultHeight, rotateRender);
                             }
+                            Thread.sleep(500); // Added to avoid crashes on Samsung devices while executing the line below.
                             decoder.configure(videoFormat, outputSurface.getSurface(), null, 0);
                             decoder.start();
 
