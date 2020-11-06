@@ -272,14 +272,15 @@ public class MediaController {
                 }
                 if (eof) {
                     inputDone = true;
+                }
+                if (videoTrackIndex >= 0) {
+                    extractor.unselectTrack(videoTrackIndex);
+                }
+                if (audioTrackIndex >= 0) {
+                    extractor.unselectTrack(audioTrackIndex);
+                }
+                return startTime;
             }
-            if (videoTrackIndex >= 0) {
-                extractor.unselectTrack(videoTrackIndex);
-            }
-            if (audioTrackIndex >= 0) {
-                extractor.unselectTrack(audioTrackIndex);
-            }
-            return startTime;
         }
         return -1;
     }
