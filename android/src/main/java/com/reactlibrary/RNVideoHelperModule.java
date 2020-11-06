@@ -1,5 +1,5 @@
 
-package com.reactlibrary;
+package com.reactnativevideohelper;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -15,7 +15,7 @@ import android.util.Log;
 import java.io.File;
 import java.util.UUID;
 
-import com.reactlibrary.video.*;
+import com.reactnativevideohelper.video.*;
 
 public class RNVideoHelperModule extends ReactContextBaseJavaModule {
 
