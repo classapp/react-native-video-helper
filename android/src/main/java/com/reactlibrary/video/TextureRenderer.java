@@ -1,4 +1,4 @@
-package com.reactlibrary.video;
+package com.reactnativevideohelper.video;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
