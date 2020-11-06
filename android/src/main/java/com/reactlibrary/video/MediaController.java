@@ -274,8 +274,7 @@ public class MediaController {
                     inputDone = true;
             }
             if (videoTrackIndex >= 0) {
-                extractor.unselectTrack(videoTra
-                }ckIndex);
+                extractor.unselectTrack(videoTrackIndex);
             }
             if (audioTrackIndex >= 0) {
                 extractor.unselectTrack(audioTrackIndex);
