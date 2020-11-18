@@ -8,7 +8,6 @@ Pod::Spec.new do |s|
   s.summary      = package["title"]
   s.description  = package["description"]
   s.homepage     = "https://github.com/classapp/react-native-video-helper"
-  s.license      = "MIT"
   s.license      = { :type => "MIT", :file => "LICENSE" }
   s.author       = package['author']
   s.platforms    = { :ios => "8.0" }

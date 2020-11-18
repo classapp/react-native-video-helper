@@ -33,7 +33,9 @@ public class MediaController {
     private static volatile MediaController Instance = null;
     private boolean videoConvertFirstWrite = true;
     private int DEFAULT_ORIENTATION = 0;
-
+    protected int resultWidth = 0;
+    protected int resultHeight = 0;
+    
     interface CompressProgressListener {
         void onProgress(float percent);
     }
@@ -121,7 +123,7 @@ public class MediaController {
 
         @Override
         public void run() {
-            MediaController.getInstance().convertVideo(videoPath, destPath, 0, -1, -1,null);
+            MediaController.getInstance().convertVideo(videoPath, destPath, 0, -1, -1,-1, null);
         }
     }
 
@@ -245,7 +247,7 @@ public class MediaController {
      * @return
      */
     @TargetApi(16)
-    public boolean convertVideo(final String sourcePath, String destinationPath, int quality, long startT, long endT, CompressProgressListener listener) {
+    public boolean convertVideo(final String sourcePath, String destinationPath, int quality, long startT, long endT,int recBitRate, CompressProgressListener listener) {
         this.path=sourcePath;
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
@@ -291,6 +293,9 @@ public class MediaController {
                 bitrate = 2600000;
                 break;
         }
+        if(recBitRate>0){
+            bitrate = recBitRate;
+        }
 
         float widthRatio = maxWidth / originalWidth;
         float heightRatio = maxHeight / originalHeight;
@@ -298,8 +303,8 @@ public class MediaController {
         float finalRatio = bestRatio < 1 ? bestRatio : 1;
         // output
         // width and height must be multiples of 2
-        int resultWidth = 2 * (Math.round((originalWidth * finalRatio)/2));
-        int resultHeight = 2 * (Math.round((originalHeight * finalRatio)/2));
+        resultWidth = 2 * (Math.round((originalWidth * finalRatio)/2));
+        resultHeight = 2 * (Math.round((originalHeight * finalRatio)/2));
 
         int rotateRender = 0;
 
@@ -317,16 +322,16 @@ public class MediaController {
                 resultHeight = resultWidth;
                 resultWidth = temp;
                 rotationValue = 0;
-                rotateRender = 270;
+//                 rotateRender = 270;
             } else if (rotationValue == 180) {
-                rotateRender = 180;
-                rotationValue = 0;
+                rotationValue = 180;
+//                 rotateRender = 180;
             } else if (rotationValue == 270) {
                 int temp = resultHeight;
                 resultHeight = resultWidth;
                 resultWidth = temp;
                 rotationValue = 0;
-                rotateRender = 90;
+//                 rotateRender = 90;
             }
         }
 
@@ -449,7 +454,7 @@ public class MediaController {
                             MediaFormat outputFormat = MediaFormat.createVideoFormat(MIME_TYPE, resultWidth, resultHeight);
                             outputFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, colorFormat);
                             outputFormat.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
-                            outputFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 25);
+                            outputFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
                             outputFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 10);
                             if (Build.VERSION.SDK_INT < 18) {
                                 outputFormat.setInteger("stride", resultWidth + 32);

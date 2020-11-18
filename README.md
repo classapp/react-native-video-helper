@@ -51,11 +51,18 @@ RNVideoHelper.compress(sourceUri, {
 	startTime: 10, // optional, in seconds, defaults to 0
 	endTime: 100, //  optional, in seconds, defaults to video duration
 	quality: 'low', // default low, can be medium or high
+	bitRate:1.3*1000*1000 //default low:1.3M,medium:1.9M,high:2.6M
 	defaultOrientation: 0 // By default is 0, some devices not save this property in metadata. Can be between 0 - 360
 }).progress(value => {
 	console.warn('progress', value); // Int with progress value from 0 to 1
-}).then(compressedUri => {
-	console.warn('compressedUri', compressedUri); // String with path to temporary compressed video
+}).then(data => {
+        //data.path the file path
+        //data.size the file size at bit
+        //data.width the video width
+        //data.height the video height
+        //data.duration the video duration
+        //data.mime the file mime type
+	console.warn('compressedUri', data); // String with path to temporary compressed video
 });
 ```
   
